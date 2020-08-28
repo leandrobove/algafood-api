@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 @Entity
-public class Estado {
+public class FormaPagamento {
 
 	@EqualsAndHashCode.Include
 	@Id
@@ -25,6 +25,6 @@ public class Estado {
 	private Long id;
 
 	@Column(nullable = false)
-	private String nome;
+	private String descricao;
 
 }
