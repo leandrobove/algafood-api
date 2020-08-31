@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.algafood.domain.entity.Permissao;
+import com.github.algafood.domain.model.Permissao;
 import com.github.algafood.domain.repository.PermissaoRepository;
 
 @Component

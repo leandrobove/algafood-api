@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.domain.entity.Estado;
+import com.github.algafood.domain.model.Estado;
 import com.github.algafood.domain.repository.EstadoRepository;
 
 @RestController

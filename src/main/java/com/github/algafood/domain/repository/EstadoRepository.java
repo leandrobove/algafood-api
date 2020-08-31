@@ -2,7 +2,7 @@ package com.github.algafood.domain.repository;
 
 import java.util.List;
 
-import com.github.algafood.domain.entity.Estado;
+import com.github.algafood.domain.model.Estado;
 
 public interface EstadoRepository {
 
