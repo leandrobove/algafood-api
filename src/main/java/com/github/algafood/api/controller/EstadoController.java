@@ -1,6 +1,7 @@
 package com.github.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +34,18 @@ public class EstadoController {
 
 	@GetMapping
 	public List<Estado> listar() {
-		return estadoRepository.listar();
+		return estadoRepository.findAll();
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Estado> buscar(@PathVariable Long id) {
-		Estado estado = estadoRepository.buscar(id);
+		Optional<Estado> estado = estadoRepository.findById(id);
 
-		if (estado == null) {
+		if (estado.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(estado);
+		return ResponseEntity.status(HttpStatus.OK).body(estado.get());
 	}
 
 	@PostMapping
@@ -70,13 +71,13 @@ public class EstadoController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Estado> atualizar(@PathVariable Long id, @RequestBody Estado estado) {
-		Estado estadoBusca = estadoRepository.buscar(id);
+		Optional<Estado> estadoBusca = estadoRepository.findById(id);
 
-		if (estadoBusca != null) {
+		if (estadoBusca.isPresent()) {
 
-			BeanUtils.copyProperties(estado, estadoBusca, "id");
+			BeanUtils.copyProperties(estado, estadoBusca.get(), "id");
 
-			Estado estadoAtualizado = estadoRepository.salvar(estadoBusca);
+			Estado estadoAtualizado = estadoRepository.save(estadoBusca.get());
 
 			return ResponseEntity.status(HttpStatus.OK).body(estadoAtualizado);
 		}
