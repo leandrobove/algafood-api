@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
+import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.Cidade;
 import com.github.algafood.domain.repository.CidadeRepository;
 import com.github.algafood.domain.service.CadastroCidadeService;
@@ -34,29 +36,37 @@ public class CidadeController {
 		return cidadeRepository.findAll();
 	}
 
-	@GetMapping(value = "/{id}")
-	public Cidade buscar(@PathVariable Long id) {
-		return cidadeService.buscarOuFalhar(id);
+	@GetMapping(value = "/{cidadeId}")
+	public Cidade buscar(@PathVariable Long cidadeId) {
+		return cidadeService.buscarOuFalhar(cidadeId);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cidade cadastrar(@RequestBody Cidade cidade) {
-		return cidadeService.salvar(cidade);
+		try {
+			return cidadeService.salvar(cidade);
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 
-	@PutMapping(value = "/{id}")
-	public Cidade atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
+	@PutMapping(value = "/{cidadeId}")
+	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
 
-		var cidadeAtual = cidadeService.buscarOuFalhar(id);
+		var cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 
-		return cidadeService.salvar(cidadeAtual);
+		try {
+			return cidadeService.salvar(cidadeAtual);
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public void deletar(@PathVariable Long id) {
-		cidadeService.excluir(id);
+	@DeleteMapping(value = "/{cidadeId}")
+	public void deletar(@PathVariable Long cidadeId) {
+		cidadeService.excluir(cidadeId);
 	}
 }

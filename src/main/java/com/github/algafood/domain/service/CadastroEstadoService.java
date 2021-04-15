@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.github.algafood.domain.exception.EntidadeEmUsoException;
-import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.github.algafood.domain.model.Estado;
 import com.github.algafood.domain.repository.EstadoRepository;
 
@@ -14,8 +14,7 @@ import com.github.algafood.domain.repository.EstadoRepository;
 public class CadastroEstadoService {
 
 	private static final String MSG_ESTADO_EM_USO = "Estado com id %d não pode ser removido, pois há relacionamentos";
-	private static final String MSG_ESTADO_NAO_ENCONTRADO = "Estado não encontrado com o id %d";
-
+	
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -23,18 +22,17 @@ public class CadastroEstadoService {
 		return estadoRepository.save(estado);
 	}
 
-	public void deletar(Long id) {
+	public void deletar(Long estadoId) {
 		try {
-			estadoRepository.deleteById(id);
+			estadoRepository.deleteById(estadoId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
+			throw new EstadoNaoEncontradoException(estadoId);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, id));
+			throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, estadoId));
 		}
 	}
 
-	public Estado buscarOuFalhar(Long id) {
-		return estadoRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_ESTADO_NAO_ENCONTRADO, id)));
+	public Estado buscarOuFalhar(Long estadoId) {
+		return estadoRepository.findById(estadoId).orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
 	}
 }

@@ -3,13 +3,17 @@ package com.github.algafood.domain.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public abstract class EntidadeNaoEncontradaException extends NegocioException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class NegocioException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public EntidadeNaoEncontradaException(String mensagem) {
+	public NegocioException(String mensagem) {
 		super(mensagem);
+	}
+
+	public NegocioException(String mensagem, Throwable causa) {
+		super(mensagem, causa);
 	}
 
 }

@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.github.algafood.domain.exception.EntidadeEmUsoException;
-import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.github.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.repository.RestauranteRepository;
 
@@ -15,16 +15,14 @@ public class CadastroRestauranteService {
 
 	private static final String MSG_RESTAURANTE_EM_USO = "Não é possível excluir o restaurante %d, pois há relacionamentos";
 
-	private static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Não existe cadastro de restaurante com o id %d";
-
 	@Autowired
 	private RestauranteRepository restauranteRepository;
-	
+
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
 
 	public Restaurante salvar(Restaurante restaurante) {
-		
+
 		var cozinha = cadastroCozinha.buscarOuFalhar(restaurante.getCozinha().getId());
 
 		restaurante.setCozinha(cozinha);
@@ -32,19 +30,19 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restaurante);
 	}
 
-	public void deletar(Long id) {
+	public void deletar(Long restauranteId) {
 		try {
-			restauranteRepository.deleteById(id);
+			restauranteRepository.deleteById(restauranteId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
+			throw new RestauranteNaoEncontradoException(restauranteId);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO, id));
+			throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO, restauranteId));
 		}
 	}
-	
-	public Restaurante buscarOuFalhar(Long id) {
-		return restauranteRepository.findById(id)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
+
+	public Restaurante buscarOuFalhar(Long restauranteId) {
+		return restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 
 }
