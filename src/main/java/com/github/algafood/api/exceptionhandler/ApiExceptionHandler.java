@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -80,28 +82,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		Problem problem = this.createProblemBuilder(status, problemType, detail).build();
 
 		return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, req);
-	}
-
-	/*
-	 * Sobrescrevendo e personalizando o body das mensagens
-	 */
-	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-
-		/*
-		 * verifica se o body está preenchido, se não estiver define o body para a
-		 * mensagem da classe Exception filha
-		 */
-		if (body == null) {
-			body = Problem.builder().timestamp(LocalDateTime.now()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.status(status.value()).title(status.getReasonPhrase()).build();
-		} else if (body instanceof String) {
-			body = Problem.builder().timestamp(LocalDateTime.now()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.status(status.value()).title((String) body).build();
-		}
-
-		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 
 	/*
@@ -209,6 +189,51 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		Problem problem = createProblemBuilder(status, problemType, detail).build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
+	/*
+	 * Exceção ocorre quando um atribudo do body obrigatório @NotNull é suprimido
+	 */
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+
+		// Mensagem personalizada com mais de um campo
+		List<FieldError> campos = ex.getBindingResult().getFieldErrors();
+		
+		List<FieldProblem> problemFields = campos.stream()
+				.map( (fieldError) -> FieldProblem.builder().name(fieldError.getField()).message(fieldError.getDefaultMessage()).build())
+				.collect(Collectors.toList());
+
+		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+		
+		Problem problem = createProblemBuilder(status, problemType, detail.toString()).fields(problemFields).build();
+
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
+	/*
+	 * Sobrescrevendo e personalizando o body das mensagens
+	 */
+	@Override
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
+			HttpStatus status, WebRequest request) {
+
+		/*
+		 * verifica se o body está preenchido, se não estiver define o body para a
+		 * mensagem da classe Exception filha
+		 */
+		if (body == null) {
+			body = Problem.builder().timestamp(LocalDateTime.now()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+					.status(status.value()).title(status.getReasonPhrase()).build();
+		} else if (body instanceof String) {
+			body = Problem.builder().timestamp(LocalDateTime.now()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+					.status(status.value()).title((String) body).build();
+		}
+
+		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 
 	/*
