@@ -1,6 +1,7 @@
 package com.github.algafood.api.exceptionhandler;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -21,5 +22,8 @@ public class Problem implements Serializable {
 	private String type;
 	private String title;
 	private String detail;
+	
+	private String userMessage; //UI message
+	private LocalDateTime timestamp;
 
 }
