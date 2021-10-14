@@ -27,7 +27,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@Autowired
 	@Lazy
 	private RestauranteRepository restauranteRepository;
@@ -61,31 +61,45 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
 	@Override
 	public List<Restaurante> buscarPorCozinhaId(Long cozinhaId) {
-		
+
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		
+
 		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
 		Root<Restaurante> root = criteria.from(Restaurante.class);
-		
+
 		Predicate predicateCozinhaId = builder.equal(root.get("cozinha"), cozinhaId);
 		criteria.where(predicateCozinhaId);
-		
+
 		TypedQuery<Restaurante> query = em.createQuery(criteria);
-		
+
 		return query.getResultList();
-		
-		/*var jpql = "from Restaurante where cozinha.id = :cozinhaId";
 
-		TypedQuery<Restaurante> query = em.createQuery(jpql, Restaurante.class);
-
-		query.setParameter("cozinhaId", cozinhaId);
-
-		return query.getResultList();*/
+		/*
+		 * var jpql = "from Restaurante where cozinha.id = :cozinhaId";
+		 * 
+		 * TypedQuery<Restaurante> query = em.createQuery(jpql, Restaurante.class);
+		 * 
+		 * query.setParameter("cozinhaId", cozinhaId);
+		 * 
+		 * return query.getResultList();
+		 */
 	}
 
 	@Override
 	public List<Restaurante> buscarComFreteGratisENomeSemelhante(String nome) {
-		return restauranteRepository.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
+		return restauranteRepository
+				.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
+	}
+
+	@Override
+	public List<Restaurante> buscarPorFormaPagamentoId(Long formaPagamentoId) {
+		String jpql = "SELECT r FROM Restaurante r left join fetch r.formasPagamento f where f.id = :formaPagamentoId";
+
+		TypedQuery<Restaurante> query = em.createQuery(jpql, Restaurante.class);
+
+		query.setParameter("formaPagamentoId", formaPagamentoId);
+
+		return query.getResultList();
 	}
 
 }

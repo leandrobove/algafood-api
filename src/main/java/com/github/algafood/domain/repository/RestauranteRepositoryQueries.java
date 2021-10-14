@@ -10,4 +10,5 @@ public interface RestauranteRepositoryQueries {
 	List<Restaurante> consultarPorNomeETaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal);
 	List<Restaurante> buscarPorCozinhaId(Long cozinhaId);
 	List<Restaurante> buscarComFreteGratisENomeSemelhante(String nome);
+	List<Restaurante> buscarPorFormaPagamentoId(Long formaPagamentoId);
 }
