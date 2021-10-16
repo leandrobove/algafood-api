@@ -64,7 +64,7 @@ public class RestauranteController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+	public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
 		var restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
 
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
