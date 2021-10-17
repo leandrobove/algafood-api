@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. "
 			+ "Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
+	
+	@Autowired
+	private MessageSource messageSource;
+	
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleUncaught(Exception ex, WebRequest req) {
@@ -204,7 +211,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		List<FieldError> campos = ex.getBindingResult().getFieldErrors();
 		
 		List<FieldProblem> problemFields = campos.stream()
-				.map( (fieldError) -> FieldProblem.builder().name(fieldError.getField()).message(fieldError.getDefaultMessage()).build())
+				.map( (fieldError) -> {
+					
+					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+					
+					return FieldProblem.builder()
+						.name(fieldError.getField())
+						.message(message)
+						.build();
+				})
 				.collect(Collectors.toList());
 
 		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
