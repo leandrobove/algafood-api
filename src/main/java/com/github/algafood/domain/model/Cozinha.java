@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.github.algafood.Groups;
+import com.github.algafood.domain.core.validation.Groups;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

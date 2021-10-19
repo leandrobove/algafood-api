@@ -1,4 +1,4 @@
-package com.github.algafood;
+package com.github.algafood.domain.core.validation;
 
 public class Groups {
 

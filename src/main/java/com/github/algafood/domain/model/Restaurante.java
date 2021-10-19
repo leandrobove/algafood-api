@@ -17,7 +17,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
@@ -27,7 +26,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.algafood.Groups;
+import com.github.algafood.domain.core.validation.Groups;
+import com.github.algafood.domain.core.validation.Multiplo;
+import com.github.algafood.domain.core.validation.TaxaFrete;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,7 +53,9 @@ public class Restaurante {
 	private String nome;
 
 	@NotNull
-	@DecimalMin(value = "0")
+	//@PositiveOrZero
+	@TaxaFrete
+	@Multiplo(numero = 5)
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 

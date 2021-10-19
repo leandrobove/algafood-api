@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.github.algafood.Groups;
+import com.github.algafood.domain.core.validation.Groups;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
