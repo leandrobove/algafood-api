@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.github.algafood.domain.exception.EntidadeEmUsoException;
@@ -15,6 +16,7 @@ import com.github.algafood.domain.model.Cozinha;
 import com.github.algafood.domain.service.CadastroCozinhaService;
 
 @SpringBootTest
+@TestPropertySource(value = "/application-test.properties")
 class CadastroCozinhaIT {
 
 	@Autowired
