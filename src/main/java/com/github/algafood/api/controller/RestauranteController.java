@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.algafood.api.model.CozinhaDTO;
+import com.github.algafood.api.model.RestauranteDTO;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.Restaurante;
@@ -49,8 +51,21 @@ public class RestauranteController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public Restaurante buscar(@PathVariable Long id) {
-		return cadastroRestaurante.buscarOuFalhar(id);
+	public RestauranteDTO buscar(@PathVariable Long id) {
+		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(id);
+		
+		RestauranteDTO restauranteDTO = new RestauranteDTO();
+		restauranteDTO.setId(restaurante.getId());
+		restauranteDTO.setNome(restaurante.getNome());
+		restauranteDTO.setTaxaFrete(restaurante.getTaxaFrete());
+		
+		CozinhaDTO cozinhaDTO = new CozinhaDTO();
+		cozinhaDTO.setId(restaurante.getCozinha().getId());
+		cozinhaDTO.setNome(restaurante.getCozinha().getNome());
+		
+		restauranteDTO.setCozinha(cozinhaDTO);
+		
+		return restauranteDTO;
 	}
 
 	@PostMapping
