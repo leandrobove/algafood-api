@@ -1,4 +1,4 @@
-package com.github.algafood.api.model;
+package com.github.algafood.api.dto;
 
 import java.math.BigDecimal;
 
@@ -13,7 +13,7 @@ public class RestauranteDTO {
 
 	private String nome;
 
-	private BigDecimal taxaFrete;
+	private BigDecimal frete;
 
 	private CozinhaDTO cozinha;
 }

@@ -1,4 +1,4 @@
-package com.github.algafood.api.model;
+package com.github.algafood.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;
