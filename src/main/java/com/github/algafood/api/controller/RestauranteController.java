@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.RestauranteDTOAssembler;
-import com.github.algafood.api.assembler.RestauranteDTOInputDisassembler;
+import com.github.algafood.api.assembler.RestauranteAssembler;
+import com.github.algafood.api.assembler.RestauranteInputDisassembler;
 import com.github.algafood.api.dto.RestauranteDTO;
-import com.github.algafood.api.dto.input.RestauranteDTOInput;
+import com.github.algafood.api.dto.input.RestauranteInput;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.Restaurante;
@@ -38,10 +37,10 @@ public class RestauranteController {
 	private CadastroRestauranteService cadastroRestaurante;
 	
 	@Autowired
-	private RestauranteDTOAssembler restauranteDTOAssembler;
+	private RestauranteAssembler restauranteDTOAssembler;
 	
 	@Autowired
-	private RestauranteDTOInputDisassembler restauranteDTOInputDisassembler;
+	private RestauranteInputDisassembler restauranteDTOInputDisassembler;
 
 	@GetMapping
 	public List<RestauranteDTO> listar() {
@@ -57,7 +56,7 @@ public class RestauranteController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteDTO cadastrar(@RequestBody @Valid RestauranteDTOInput restauranteDTOInput) {
+	public RestauranteDTO cadastrar(@RequestBody @Valid RestauranteInput restauranteDTOInput) {
 		try {
 			Restaurante restaurante = restauranteDTOInputDisassembler.toRestaurante(restauranteDTOInput);
 			
@@ -68,13 +67,11 @@ public class RestauranteController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public RestauranteDTO atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteDTOInput restauranteDTOInput) {
+	public RestauranteDTO atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteDTOInput) {
+		
 		var restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
 		
-		Restaurante restaurante = restauranteDTOInputDisassembler.toRestaurante(restauranteDTOInput);
-
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
-				"produtos");
+		restauranteDTOInputDisassembler.copyToDomainObject(restauranteDTOInput, restauranteAtual);
 
 		try {
 			return restauranteDTOAssembler.toDTO(cadastroRestaurante.salvar(restauranteAtual));

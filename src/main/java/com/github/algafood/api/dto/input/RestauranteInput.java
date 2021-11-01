@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RestauranteDTOInput {
+public class RestauranteInput {
 	
 	@NotBlank
 	private String nome;
@@ -24,6 +24,6 @@ public class RestauranteDTOInput {
 	
 	@Valid
 	@NotNull
-	private CozinhaIdDTOInput cozinha;
+	private CozinhaIdInput cozinha;
 
 }

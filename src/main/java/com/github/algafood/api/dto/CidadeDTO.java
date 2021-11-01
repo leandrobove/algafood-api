@@ -1,19 +1,18 @@
 package com.github.algafood.api.dto;
 
-import java.math.BigDecimal;
+import com.github.algafood.domain.model.Estado;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RestauranteDTO {
+public class CidadeDTO {
 
 	private Long id;
 
 	private String nome;
 
-	private BigDecimal taxaFrete;
+	private Estado estado;
 
-	private CozinhaDTO cozinha;
 }
