@@ -37,7 +37,7 @@ public class CadastroRestauranteService {
 		try {
 			restauranteRepository.deleteById(restauranteId);
 			restauranteRepository.flush();
-			
+
 		} catch (EmptyResultDataAccessException e) {
 			throw new RestauranteNaoEncontradoException(restauranteId);
 		} catch (DataIntegrityViolationException e) {
@@ -48,6 +48,20 @@ public class CadastroRestauranteService {
 	public Restaurante buscarOuFalhar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId)
 				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+	}
+
+	@Transactional
+	public void ativar(Long idRestaurante) {
+		Restaurante restauranteAtual = buscarOuFalhar(idRestaurante);
+
+		restauranteAtual.ativar();
+	}
+
+	@Transactional
+	public void inativar(Long idRestaurante) {
+		Restaurante restauranteAtual = buscarOuFalhar(idRestaurante);
+
+		restauranteAtual.inativar();
 	}
 
 }

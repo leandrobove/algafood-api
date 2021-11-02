@@ -84,6 +84,18 @@ public class RestauranteController {
 	public void deletar(@PathVariable Long id) {
 		cadastroRestaurante.deletar(id);
 	}
+	
+	@PutMapping(value = "/{id}/ativo")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable(name = "id") Long restauranteId) {
+		cadastroRestaurante.ativar(restauranteId);
+	}
+	
+	@DeleteMapping(value = "/{id}/inativo")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable(name = "id") Long restauranteId) {
+		cadastroRestaurante.inativar(restauranteId);
+	}
 
 	/*@PatchMapping(value = "/{id}")
 	public RestauranteDTO atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> mapCampos,
