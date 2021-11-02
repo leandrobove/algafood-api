@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.RestauranteAssembler;
-import com.github.algafood.api.assembler.RestauranteInputDisassembler;
+import com.github.algafood.api.assembler.input.RestauranteInputDisassembler;
 import com.github.algafood.api.dto.RestauranteDTO;
 import com.github.algafood.api.dto.input.RestauranteInput;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -37,30 +37,30 @@ public class RestauranteController {
 	private CadastroRestauranteService cadastroRestaurante;
 	
 	@Autowired
-	private RestauranteAssembler restauranteDTOAssembler;
+	private RestauranteAssembler restauranteAssembler;
 	
 	@Autowired
-	private RestauranteInputDisassembler restauranteDTOInputDisassembler;
+	private RestauranteInputDisassembler restauranteInputDisassembler;
 
 	@GetMapping
 	public List<RestauranteDTO> listar() {
-		return restauranteDTOAssembler.toListDTO(restauranteRepository.findAll());
+		return restauranteAssembler.toListDTO(restauranteRepository.findAll());
 	}
 
 	@GetMapping(value = "/{id}")
 	public RestauranteDTO buscar(@PathVariable Long id) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(id);
 
-		return restauranteDTOAssembler.toDTO(restaurante);
+		return restauranteAssembler.toDTO(restaurante);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteDTO cadastrar(@RequestBody @Valid RestauranteInput restauranteDTOInput) {
 		try {
-			Restaurante restaurante = restauranteDTOInputDisassembler.toRestaurante(restauranteDTOInput);
+			Restaurante restaurante = restauranteInputDisassembler.toRestaurante(restauranteDTOInput);
 			
-			return restauranteDTOAssembler.toDTO(cadastroRestaurante.salvar(restaurante));
+			return restauranteAssembler.toDTO(cadastroRestaurante.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -71,16 +71,17 @@ public class RestauranteController {
 		
 		var restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
 		
-		restauranteDTOInputDisassembler.copyToDomainObject(restauranteDTOInput, restauranteAtual);
+		restauranteInputDisassembler.copyToDomainObject(restauranteDTOInput, restauranteAtual);
 
 		try {
-			return restauranteDTOAssembler.toDTO(cadastroRestaurante.salvar(restauranteAtual));
+			return restauranteAssembler.toDTO(cadastroRestaurante.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
 	@DeleteMapping(value = "/{id}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long id) {
 		cadastroRestaurante.deletar(id);
 	}

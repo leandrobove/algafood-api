@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.CozinhaAssembler;
-import com.github.algafood.api.assembler.CozinhaInputDisassembler;
+import com.github.algafood.api.assembler.input.CozinhaInputDisassembler;
 import com.github.algafood.api.dto.CozinhaDTO;
 import com.github.algafood.api.dto.input.CozinhaInput;
 import com.github.algafood.domain.model.Cozinha;

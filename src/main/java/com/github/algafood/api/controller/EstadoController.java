@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.EstadoAssembler;
-import com.github.algafood.api.assembler.EstadoInputDisassembler;
+import com.github.algafood.api.assembler.input.EstadoInputDisassembler;
 import com.github.algafood.api.dto.EstadoDTO;
 import com.github.algafood.api.dto.input.EstadoInput;
 import com.github.algafood.domain.repository.EstadoRepository;
@@ -65,6 +65,7 @@ public class EstadoController {
 	}
 
 	@DeleteMapping(value = "/{estadoId}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long estadoId) {
 		cadastroEstado.deletar(estadoId);
 	}

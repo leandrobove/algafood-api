@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.CidadeAssembler;
-import com.github.algafood.api.assembler.CidadeInputDisassembler;
+import com.github.algafood.api.assembler.input.CidadeInputDisassembler;
 import com.github.algafood.api.dto.CidadeDTO;
 import com.github.algafood.api.dto.input.CidadeInput;
 import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -36,26 +36,26 @@ public class CidadeController {
 	private CadastroCidadeService cidadeService;
 
 	@Autowired
-	private CidadeAssembler cidadeDTOAssembler;
+	private CidadeAssembler cidadeAssembler;
 
 	@Autowired
-	private CidadeInputDisassembler cidadeDTOInputDisassembler;
+	private CidadeInputDisassembler cidadeInputDisassembler;
 
 	@GetMapping
 	public List<CidadeDTO> listar() {
-		return cidadeDTOAssembler.toListDTO(cidadeRepository.findAll());
+		return cidadeAssembler.toListDTO(cidadeRepository.findAll());
 	}
 
 	@GetMapping(value = "/{cidadeId}")
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
-		return cidadeDTOAssembler.toDTO(cidadeService.buscarOuFalhar(cidadeId));
+		return cidadeAssembler.toDTO(cidadeService.buscarOuFalhar(cidadeId));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
 		try {
-			return cidadeDTOAssembler.toDTO(cidadeService.salvar(cidadeDTOInputDisassembler.toCidade(cidadeDTOInput)));
+			return cidadeAssembler.toDTO(cidadeService.salvar(cidadeInputDisassembler.toCidade(cidadeDTOInput)));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -66,16 +66,17 @@ public class CidadeController {
 
 		var cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
-		cidadeDTOInputDisassembler.copyToDomainObject(cidadeDTOInput, cidadeAtual);
+		cidadeInputDisassembler.copyToDomainObject(cidadeDTOInput, cidadeAtual);
 
 		try {
-			return cidadeDTOAssembler.toDTO(cidadeService.salvar(cidadeAtual));
+			return cidadeAssembler.toDTO(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
 	@DeleteMapping(value = "/{cidadeId}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long cidadeId) {
 		cidadeService.excluir(cidadeId);
 	}

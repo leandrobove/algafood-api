@@ -1,4 +1,4 @@
-package com.github.algafood.api.assembler;
+package com.github.algafood.api.assembler.input;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
