@@ -1,5 +1,6 @@
 package com.github.algafood.api.assembler;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class FormaPagamentoAssembler {
 		return modelMapper.map(formaPagamento, FormaPagamentoDTO.class);
 	}
 
-	public List<FormaPagamentoDTO> toListDTO(List<FormaPagamento> formasPagamento) {
+	public List<FormaPagamentoDTO> toListDTO(Collection<FormaPagamento> formasPagamento) {
 		return formasPagamento.stream().map((formaPagamento) -> toDTO(formaPagamento)).collect(Collectors.toList());
 	}
 
