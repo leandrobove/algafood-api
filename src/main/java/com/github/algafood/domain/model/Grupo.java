@@ -1,7 +1,7 @@
 package com.github.algafood.domain.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +34,15 @@ public class Grupo {
 	private String nome;
 
 	@ManyToMany
-	@JoinTable(name = "grupo_permissao", joinColumns = @JoinColumn(name="grupo_id"), inverseJoinColumns = @JoinColumn(name="permissao_id"))
-	private List<Permissao> permissoes = new ArrayList<Permissao>();
+	@JoinTable(name = "grupo_permissao", joinColumns = @JoinColumn(name = "grupo_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
+	private Set<Permissao> permissoes = new HashSet<Permissao>();
+
+	public Boolean adicionarPermissao(Permissao permissao) {
+		return this.getPermissoes().add(permissao);
+	}
+
+	public Boolean removerPermissao(Permissao permissao) {
+		return this.getPermissoes().remove(permissao);
+	}
 
 }
