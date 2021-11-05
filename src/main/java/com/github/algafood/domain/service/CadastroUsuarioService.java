@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.algafood.domain.exception.EntidadeEmUsoException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.exception.UsuarioNaoEncontradoException;
+import com.github.algafood.domain.model.Grupo;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.UsuarioRepository;
 
@@ -22,13 +23,16 @@ public class CadastroUsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
+	@Autowired
+	private CadastroGrupoService grupoService;
+
 	public Usuario buscarOuFalhar(Long usuarioId) {
 		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
-		usuarioRepository.detach(usuario); //remover do contexto de persistencia do jpa
+		usuarioRepository.detach(usuario); // remover do contexto de persistencia do jpa
 
 		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
 
@@ -63,6 +67,22 @@ public class CadastroUsuarioService {
 		}
 
 		usuarioAtual.setSenha(novaSenha);
+	}
+
+	@Transactional
+	public void associarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = buscarOuFalhar(usuarioId);
+		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+
+		usuario.adicionarGrupo(grupo);
+	}
+
+	@Transactional
+	public void desassociarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = buscarOuFalhar(usuarioId);
+		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+
+		usuario.removerGrupo(grupo);
 	}
 
 }
