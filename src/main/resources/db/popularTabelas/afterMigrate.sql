@@ -12,6 +12,7 @@ delete from restaurante;
 delete from restaurante_forma_pagamento;
 delete from usuario;
 delete from usuario_grupo;
+delete from restaurante_usuario_responsavel;
 
 set foreign_key_checks = 1;
 
@@ -75,6 +76,9 @@ insert into usuario(id, nome, email, senha, data_cadastro) values(1, 'João da S
 insert into usuario(id, nome, email, senha, data_cadastro) values(2, 'Maria Joaquina', 'maria.vnd@hotmail.com', '123', utc_timestamp);
 insert into usuario(id, nome, email, senha, data_cadastro) values(3, 'José Souza', 'jose.aux@gmail.com', '123', utc_timestamp);
 insert into usuario(id, nome, email, senha, data_cadastro) values(4, 'Sebastião Martins', 'sebastiao.cad@icloud.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', utc_timestamp);
+
+insert into restaurante_usuario_responsavel (restaurante_id, usuario_id) values (1, 5), (3, 5), (1, 2);
 
 insert into grupo_permissao (grupo_id, permissao_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1); 
 

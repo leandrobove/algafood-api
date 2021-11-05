@@ -10,6 +10,7 @@ import com.github.algafood.domain.exception.EntidadeEmUsoException;
 import com.github.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.github.algafood.domain.model.FormaPagamento;
 import com.github.algafood.domain.model.Restaurante;
+import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.RestauranteRepository;
 
 @Service
@@ -28,6 +29,9 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private CadastroFormaPagamentoService formaPagamentoService;
+
+	@Autowired
+	private CadastroUsuarioService usuarioService;
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
@@ -101,6 +105,22 @@ public class CadastroRestauranteService {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
 		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
+	public void associarResponsavel(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.adicionarResponsavel(usuario);
+	}
+
+	@Transactional
+	public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.removerResponsavel(usuario);
 	}
 
 }
