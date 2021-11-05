@@ -23,6 +23,7 @@ import com.github.algafood.api.dto.input.RestauranteInput;
 import com.github.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
+import com.github.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.repository.RestauranteRepository;
 import com.github.algafood.domain.service.CadastroRestauranteService;
@@ -99,12 +100,32 @@ public class RestauranteController {
 		cadastroRestaurante.inativar(restauranteId);
 	}
 
+	@PutMapping(value = "/ativacoes")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestaurante.ativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
+	@DeleteMapping(value = "/ativacoes")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestaurante.inativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
 	@PutMapping(value = "/{restauranteId}/abertura")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long restauranteId) {
 		cadastroRestaurante.abrir(restauranteId);
 	}
-	
+
 	@PutMapping(value = "/{restauranteId}/fechamento")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long restauranteId) {

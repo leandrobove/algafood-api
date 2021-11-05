@@ -1,5 +1,7 @@
 package com.github.algafood.domain.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -61,6 +63,16 @@ public class CadastroRestauranteService {
 	public Restaurante buscarOuFalhar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId)
 				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+	}
+
+	@Transactional
+	public void ativar(List<Long> restauranteIds) {
+		restauranteIds.forEach((restauranteId) -> this.ativar(restauranteId));
+	}
+	
+	@Transactional
+	public void inativar(List<Long> restauranteIds) {
+		restauranteIds.forEach((restauranteId) -> this.inativar(restauranteId));
 	}
 
 	@Transactional
