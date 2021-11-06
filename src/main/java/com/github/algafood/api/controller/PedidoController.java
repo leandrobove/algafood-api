@@ -2,16 +2,29 @@ package com.github.algafood.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.PedidoAssembler;
 import com.github.algafood.api.assembler.PedidoResumoDTOAssembler;
+import com.github.algafood.api.assembler.input.PedidoInputDisassembler;
 import com.github.algafood.api.dto.PedidoDTO;
 import com.github.algafood.api.dto.PedidoResumoDTO;
+import com.github.algafood.api.dto.input.PedidoInput;
+import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.github.algafood.domain.exception.NegocioException;
+import com.github.algafood.domain.model.Pedido;
+import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.PedidoRepository;
 import com.github.algafood.domain.service.EmissaoPedidoService;
 
@@ -31,6 +44,9 @@ public class PedidoController {
 	@Autowired
 	private EmissaoPedidoService emissaoPedidoService;
 
+	@Autowired
+	private PedidoInputDisassembler pedidoInputDisassembler;
+
 	@GetMapping
 	public List<PedidoResumoDTO> listar() {
 		return pedidoResumoDTOAssembler.toListDTO(pedidoRepository.findAll());
@@ -39,5 +55,26 @@ public class PedidoController {
 	@GetMapping(value = "/{pedidoId}")
 	public PedidoDTO buscar(@PathVariable Long pedidoId) {
 		return pedidoAssembler.toDTO(emissaoPedidoService.buscarOuFalhar(pedidoId));
+	}
+
+	@PostMapping
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public PedidoDTO cadastrar(@RequestBody @Valid PedidoInput pedidoInput) {
+
+		try {
+			Pedido pedido = pedidoInputDisassembler.toPedido(pedidoInput);
+
+			// autenticar usuario
+			Usuario cliente = new Usuario();
+			cliente.setId(1L);
+
+			pedido.setCliente(cliente);
+
+			Pedido pedidoSalvo = emissaoPedidoService.emitir(pedido);
+
+			return pedidoAssembler.toDTO(pedidoSalvo);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 }
