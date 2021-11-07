@@ -21,6 +21,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.github.algafood.domain.exception.NegocioException;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -93,5 +95,29 @@ public class Pedido {
 
 	public void atribuirPedidoAosItens() {
 		getItens().forEach(item -> item.setPedido(this));
+	}
+
+	public void confirmar() {
+		this.setStatus(StatusPedido.CONFIRMADO);
+		this.setDataConfirmacao(OffsetDateTime.now());
+	}
+
+	public void entregar() {
+		this.setStatus(StatusPedido.ENTREGUE);
+		this.setDataEntrega(OffsetDateTime.now());
+	}
+
+	public void cancelar() {
+		this.setStatus(StatusPedido.CANCELADO);
+		this.setDataCancelamento(OffsetDateTime.now());
+	}
+
+	private void setStatus(StatusPedido novoStatusPedido) {
+		if (this.getStatus().naoPodeAlterarPara(novoStatusPedido)) {
+			throw new NegocioException(String.format("Status do pedido %d não pode ser alterado de %s para %s.",
+					this.getId(), getStatus().getDescricao(), novoStatusPedido.getDescricao()));
+		}
+
+		this.status = novoStatusPedido;
 	}
 }
