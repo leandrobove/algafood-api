@@ -14,22 +14,22 @@ public class AlteracaoStatusPedidoService {
 	private EmissaoPedidoService emissaoPedidoService;
 
 	@Transactional
-	public void confirmar(Long pedidoId) {
-		Pedido pedido = emissaoPedidoService.buscarOuFalhar(pedidoId);
+	public void confirmar(String codigoPedido) {
+		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
 		pedido.confirmar();
 	}
 
 	@Transactional
-	public void entregar(Long pedidoId) {
-		Pedido pedido = emissaoPedidoService.buscarOuFalhar(pedidoId);
+	public void entregar(String codigoPedido) {
+		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
 		pedido.entregar();
 	}
 
 	@Transactional
-	public void cancelar(Long pedidoId) {
-		Pedido pedido = emissaoPedidoService.buscarOuFalhar(pedidoId);
+	public void cancelar(String codigoPedido) {
+		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
 		pedido.cancelar();
 	}
