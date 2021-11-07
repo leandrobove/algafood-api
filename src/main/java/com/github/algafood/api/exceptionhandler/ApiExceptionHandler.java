@@ -49,7 +49,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ex.printStackTrace();
 
-		Problem problem = this.createProblemBuilder(status, problemType, detail).build();
+		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(detail).build();
 
 		return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, req);
 	}
@@ -61,7 +61,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
 		String detail = e.getMessage();
 
-		Problem problem = this.createProblemBuilder(status, problemType, detail).build();
+		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(detail).build();
 
 		return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, req);
 	}
@@ -72,7 +72,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.CONFLICT;
 		ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
 		String detail = e.getMessage();
-		String userMessage = MSG_ERRO_GENERICA_USUARIO_FINAL;
+		String userMessage = detail;
 
 		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(userMessage).build();
 
@@ -86,13 +86,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemType problemType = ProblemType.ERRO_NEGOCIO;
 		String detail = e.getMessage();
 
-		Problem problem = this.createProblemBuilder(status, problemType, detail).build();
+		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(detail).build();
 
 		return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, req);
 	}
 
 	/*
-	 * Exceção ocorre quando um mensagem tem erro de sintaxe no body do request
+	 * Exceção ocorre quando um mensagem tem erro de sintaxe no payload/body do request
 	 */
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -109,7 +109,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe";
 
-		Problem problem = this.createProblemBuilder(status, problemType, detail).build();
+		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 
 		return this.handleExceptionInternal(ex, problem, headers, status, request);
 	}
@@ -166,7 +166,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/*
-	 * Exceção ocorre quando um recurso URL recebe um valor do tipo incorreto
+	 * Exceção ocorre quando um recurso URL recebe um valor do tipo incorreto, ex: espera um Long e recebe uma String
 	 */
 	private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -177,13 +177,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
 				ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
-		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	/*
-	 * Exceção ocorre quando o recurso/entidade não existe
+	 * Exceção ocorre quando o /endpoint não existe
 	 */
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
@@ -193,13 +193,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.", ex.getRequestURL());
 
-		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	/*
-	 * Exceção ocorre quando um atribudo do body obrigatório @NotNull é suprimido
+	 * Exceção ocorre quando um atributo do body obrigatório @NotNull é suprimido
 	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -224,7 +224,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 		
-		Problem problem = createProblemBuilder(status, problemType, detail.toString()).fields(problemFields).build();
+		Problem problem = createProblemBuilder(status, problemType, detail).fields(problemFields).userMessage(detail).build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}

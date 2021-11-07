@@ -18,8 +18,8 @@ public class PedidoDTO {
 	private String status;
 	private OffsetDateTime dataCriacao;
 	private OffsetDateTime dataConfirmacao;
-	private OffsetDateTime dataCancelamento;
 	private OffsetDateTime dataEntrega;
+	private OffsetDateTime dataCancelamento;
 
 	private RestauranteResumoDTO restaurante;
 	private UsuarioDTO cliente;
