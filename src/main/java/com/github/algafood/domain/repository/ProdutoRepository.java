@@ -14,9 +14,11 @@ import com.github.algafood.domain.model.Restaurante;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-	List<Produto> findByRestaurante(Restaurante restaurante);
+	List<Produto> findTodosByRestaurante(Restaurante restaurante);
 
 	@Query("from Produto where restaurante.id = :restaurante and id = :produto")
 	Optional<Produto> findByRestauranteIdAndProdutoId(@Param("restaurante") Long restauranteId, @Param("produto") Long produtoId);
 	
+	@Query("from Produto p where p.restaurante = :restaurante and p.ativo = true")
+	List<Produto> findAtivosByRestaurante(Restaurante restaurante);
 }

@@ -47,39 +47,71 @@ public class CozinhaControllerTest {
 
 	@Test
 	public void deveRetornarStatus200_QuandoConsultarCozinhas() {
-		given().accept(ContentType.JSON).when().get().then().statusCode(HttpStatus.OK.value());
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.get()
+		.then()
+			.statusCode(HttpStatus.OK.value());
 	}
 
 	@Test
 	public void deveRetornar2Cozinhas_QuandoConsultarCozinhas() {
 
-		given().accept(ContentType.JSON).when().get().then().body("", Matchers.hasSize(2)).body("nome",
-				Matchers.hasItems("Tailandesa", "Indiana"));
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.get()
+		.then()
+			.body("", Matchers.hasSize(2)).body("nome", Matchers.hasItems("Tailandesa", "Indiana"));
 	}
 
 	@Test
 	public void deveRetornarStatus201_QuantoCadastrarCozinha() {
 
-		Cozinha cozinha = new Cozinha(null, "Marroquina", null);
+		String cozinhaJson = "{\r\n"
+				+ "    \"nome\":\"Japonesa\"\r\n"
+				+ "}";
 
-		given().body(cozinha).contentType(ContentType.JSON).accept(ContentType.JSON).when().post().then()
-				.statusCode(HttpStatus.CREATED.value());
+		given()
+			.body(cozinhaJson)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.CREATED.value());
 	}
 
 	@Test
 	public void deveRetornarStatus400_QuandoCadastrarUmaCozinhaSemNome() {
-		Cozinha cozinha = new Cozinha(null, null, null);
+		String cozinhaJson = "{}";
 
-		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(cozinha).when().post().then()
-				.statusCode(HttpStatus.BAD_REQUEST.value());
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(cozinhaJson)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
 	public void deveRetornarStatus400_QuandoCadastrarUmaCozinhaComNomeVazio() {
-		Cozinha cozinha = new Cozinha(null, "   ", null);
 
-		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(cozinha).when().post().then()
-				.statusCode(HttpStatus.BAD_REQUEST.value());
+		String cozinhaJson = "{\r\n"
+				+ "    \"nome\":\"  \"\r\n"
+				+ "}";
+
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(cozinhaJson)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
@@ -91,32 +123,39 @@ public class CozinhaControllerTest {
 		.when()
 			.get("/{cozinhaId}")
 		.then()
-				.statusCode(HttpStatus.OK.value())
-				.body("nome", CoreMatchers.equalTo("Indiana"));
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", CoreMatchers.equalTo("Indiana"));
 	}
 
 	@Test
 	public void deveRetornarStatus404_QuantoConsultarCozinhaInexistente() {
 
-		given().accept(ContentType.JSON).pathParam("cozinhaId", COZINHA_ID_INEXISTENTE).when().get("/{cozinhaId}").then()
+		given()
+			.accept(ContentType.JSON)
+			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
+		.when()
+			.get("/{cozinhaId}")
+		.then()
 				.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 
 	@Test
 	public void deveRetornarStatus200ERespostaCorreta_QuandoAtualizarCozinha() {
 		
-		Cozinha cozinhaNova = new Cozinha(null, "Nova Cozinha", null);
+		String cozinhaJson = "{\r\n"
+				+ "    \"nome\":\"Nova Cozinha\"\r\n"
+				+ "}";
 		
 		given()
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
-			.pathParam("cozinhaId", 1)
-			.body(cozinhaNova)
+//			.pathParam("cozinhaId", 1)
+			.body(cozinhaJson)
 		.when()
-			.put("/{cozinhaId}")
+			.put("/{cozinhaId}", 1)
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", CoreMatchers.equalTo(cozinhaNova.getNome()))
+			.body("nome", CoreMatchers.equalTo("Nova Cozinha"))
 			.body("id", CoreMatchers.equalTo(1));
 		
 	}
@@ -124,13 +163,15 @@ public class CozinhaControllerTest {
 	@Test
 	public void deveRetornarStatus400_QuandoAtualizarCozinhaInexistente() {
 		
-		Cozinha cozinhaNova = new Cozinha(null, "Nova Cozinha", null);
+		String cozinhaJson = "{\r\n"
+				+ "    \"nome\":\"Nova Cozinha\"\r\n"
+				+ "}";
 		
 		given()
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
 			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
-			.body(cozinhaNova)
+			.body(cozinhaJson)
 		.when()
 			.put("/{cozinhaId}")
 		.then()
@@ -141,13 +182,15 @@ public class CozinhaControllerTest {
 	@Test
 	public void deveRetornarStatus400_QuandoAtualizarCozinhaSemNome() {
 		
-		Cozinha cozinhaNova = new Cozinha(null, "  ", null);
+		String cozinhaJson = "{\r\n"
+				+ "    \"nome\":\"   \"\r\n"
+				+ "}";
 		
 		given()
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
 			.pathParam("cozinhaId", 1)
-			.body(cozinhaNova)
+			.body(cozinhaJson)
 		.when()
 			.put("/{cozinhaId}")
 		.then()
