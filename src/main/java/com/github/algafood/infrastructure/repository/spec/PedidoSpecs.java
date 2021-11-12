@@ -22,9 +22,11 @@ public class PedidoSpecs {
 
 			@Override
 			public Predicate toPredicate(Root<Pedido> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				
-				root.fetch("restaurante").fetch("cozinha");
-				root.fetch("cliente");
+
+				if (query.getResultType().equals(Pedido.class)) {
+					root.fetch("restaurante").fetch("cozinha");
+					root.fetch("cliente");
+				}
 
 				var predicates = new ArrayList<Predicate>();
 
