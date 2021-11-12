@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -205,10 +207,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+		return this.handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+	}
+	
+	/*
+	 * Exceção ocorre quando o tipo do parametro da URL é incorreto - ex: espera-se um Long e recebe uma String
+	 */
+	@Override
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request) {
+		
+		return this.handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+	}
+
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request, BindingResult bindingResult) {
 		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 
 		// Mensagem personalizada com mais de um campo
-		List<FieldError> campos = ex.getBindingResult().getFieldErrors();
+		List<FieldError> campos = bindingResult.getFieldErrors();
 		
 		List<FieldProblem> problemFields = campos.stream()
 				.map( (fieldError) -> {
