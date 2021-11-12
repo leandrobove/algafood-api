@@ -25,7 +25,9 @@ import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.Pedido;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.PedidoRepository;
+import com.github.algafood.domain.repository.filter.PedidoFilter;
 import com.github.algafood.domain.service.EmissaoPedidoService;
+import com.github.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -47,8 +49,11 @@ public class PedidoController {
 	private PedidoInputDisassembler pedidoInputDisassembler;
 
 	@GetMapping
-	public List<PedidoResumoDTO> listar() {
-		return pedidoResumoDTOAssembler.toListDTO(pedidoRepository.findAll());
+	public List<PedidoResumoDTO> listarComFiltro(PedidoFilter pedidoFilter) {
+
+		List<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter));
+
+		return pedidoResumoDTOAssembler.toListDTO(pedidos);
 	}
 
 	@GetMapping(value = "/{codigoPedido}")
