@@ -1,8 +1,13 @@
 package com.github.algafood.api.exceptionhandler;
 
 import java.time.OffsetDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path.Node;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;

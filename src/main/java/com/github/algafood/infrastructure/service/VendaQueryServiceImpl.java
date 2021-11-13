@@ -1,14 +1,13 @@
 package com.github.algafood.infrastructure.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CompoundSelection;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -28,16 +27,18 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 	private EntityManager em;
 
 	@Override
-	public List<VendaDiaria> listarVendasDiarias(VendaDiariaFilter filter) {
+	public List<VendaDiaria> listarVendasDiarias(VendaDiariaFilter filter, String timeOffset) {
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<VendaDiaria> criteriaQuery = criteriaBuilder.createQuery(VendaDiaria.class);
 
 		Root<Pedido> root = criteriaQuery.from(Pedido.class);
 
-		Expression<LocalDate> funcaoDate = criteriaBuilder.function("date", LocalDate.class, root.get("dataCriacao"));
+		var funcaoConvertTz = criteriaBuilder.function("convert_tz", Date.class, root.get("dataCriacao"),
+				criteriaBuilder.literal("+00:00"), criteriaBuilder.literal(timeOffset));
+		var funcaoDateDataCriacao = criteriaBuilder.function("date", Date.class, funcaoConvertTz);
 
-		CompoundSelection<VendaDiaria> selection = criteriaBuilder.construct(VendaDiaria.class, funcaoDate,
+		CompoundSelection<VendaDiaria> selection = criteriaBuilder.construct(VendaDiaria.class, funcaoDateDataCriacao,
 				criteriaBuilder.count(root.get("id")), criteriaBuilder.sum(root.get("valorTotal")));
 
 		List<Predicate> predicates = new ArrayList<Predicate>();
@@ -55,7 +56,7 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 
 		criteriaQuery.select(selection);
 		criteriaQuery.where(predicates.toArray(new Predicate[0]));
-		criteriaQuery.groupBy(funcaoDate);
+		criteriaQuery.groupBy(funcaoDateDataCriacao);
 
 		return em.createQuery(criteriaQuery).getResultList();
 	}
