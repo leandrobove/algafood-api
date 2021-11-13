@@ -26,10 +26,10 @@ import com.github.algafood.api.dto.PedidoResumoDTO;
 import com.github.algafood.api.dto.input.PedidoInput;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
+import com.github.algafood.domain.filter.PedidoFilter;
 import com.github.algafood.domain.model.Pedido;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.PedidoRepository;
-import com.github.algafood.domain.repository.filter.PedidoFilter;
 import com.github.algafood.domain.service.EmissaoPedidoService;
 import com.github.algafood.infrastructure.repository.spec.PedidoSpecs;
 
@@ -55,7 +55,7 @@ public class PedidoController {
 	@GetMapping
 	public Page<PedidoResumoDTO> listarComFiltro(PedidoFilter pedidoFilter,
 			@PageableDefault(size = 10) Pageable pageable) {
-
+		
 		Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageable);
 
 		List<PedidoResumoDTO> pedidosDTOPage = pedidoResumoDTOAssembler.toListDTO(pedidoPage.getContent());

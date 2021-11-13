@@ -9,8 +9,8 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.github.algafood.domain.filter.PedidoFilter;
 import com.github.algafood.domain.model.Pedido;
-import com.github.algafood.domain.repository.filter.PedidoFilter;
 
 public class PedidoSpecs {
 

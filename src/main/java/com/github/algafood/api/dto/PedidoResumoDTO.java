@@ -21,5 +21,4 @@ public class PedidoResumoDTO {
 
 	private UsuarioDTO cliente;
 
-	
 }
