@@ -33,4 +33,11 @@ public class FotoProduto {
 	@MapsId
 	private Produto produto;
 
+	public Long getRestauranteId() {
+		if (this.getProduto() != null) {
+			return this.getProduto().getRestaurante().getId();
+		}
+		return null;
+	}
+
 }
