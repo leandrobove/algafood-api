@@ -9,7 +9,7 @@ public class FotoProdutoNaoEncontradaException extends EntidadeNaoEncontradaExce
 	}
 
 	public FotoProdutoNaoEncontradaException(Long restauranteId, Long produtoId) {
-		super(String.format("Não existe um cadastro de foto do produto com código %d para o restaurante de código %d",
+		super(String.format("Não existe um cadastro de foto do produto para o restaurante de código %d e código de produto %d",
 				restauranteId, produtoId));
 	}
 }
