@@ -77,11 +77,11 @@ insert into grupo (id, nome) values (2, 'Vendedor');
 insert into grupo (id, nome) values (3, 'Secretária');
 insert into grupo (id, nome) values (4, 'Cadastrador');
 
-insert into usuario(id, nome, email, senha, data_cadastro) values(1, 'João da Silva', 'joao.ger@gmail.com', '123', utc_timestamp);
-insert into usuario(id, nome, email, senha, data_cadastro) values(2, 'Maria Joaquina', 'maria.vnd@hotmail.com', '123', utc_timestamp);
-insert into usuario(id, nome, email, senha, data_cadastro) values(3, 'José Souza', 'jose.aux@gmail.com', '123', utc_timestamp);
-insert into usuario(id, nome, email, senha, data_cadastro) values(4, 'Sebastião Martins', 'sebastiao.cad@icloud.com', '123', utc_timestamp);
-insert into usuario(id, nome, email, senha, data_cadastro) values(5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(1, 'João da Silva', 'joao.ger@yopmail.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(2, 'Maria Joaquina', 'maria.vnd@yopmail.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(3, 'José Souza', 'jose.aux@yopmail.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(4, 'Sebastião Martins', 'sebastiao.cad@yopmail.com', '123', utc_timestamp);
+insert into usuario(id, nome, email, senha, data_cadastro) values(5, 'Manoel Lima', 'manoel.loja@yopmail.com', '123', utc_timestamp);
 
 insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) values (1, 'c7c917ce-4016-11ec-a47b-706979a681a3', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil','CRIADO', utc_timestamp, 298.90, 10, 308.90);
 insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) values (2, 'c7c91ffc-4016-11ec-a47b-706979a681a3', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro', 'CRIADO', utc_timestamp, 79, 0, 79);
