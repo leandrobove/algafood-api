@@ -21,4 +21,11 @@ public class EmailProperties {
 	@NotNull
 	private String remetente;
 
+	//valor padrão = FAKE
+	private Implementacao impl = Implementacao.FAKE;
+
+	public enum Implementacao {
+		SMTP, FAKE;
+	}
+
 }

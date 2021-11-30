@@ -15,9 +15,9 @@ import com.github.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 public class AlgafoodApiApplication {
 
 	public static void main(String[] args) {
-		//define UTC como horário padrão
+		// define UTC como horário padrão
 		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(ZoneOffset.UTC.getId())));
-		
+
 		SpringApplication.run(AlgafoodApiApplication.class, args);
 	}
 
