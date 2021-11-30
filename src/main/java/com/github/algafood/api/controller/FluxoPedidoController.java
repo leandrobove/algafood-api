@@ -25,4 +25,12 @@ public class FluxoPedidoController {
 
 	}
 
+	@PutMapping("/cancelamento")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void cancelar(@PathVariable String codigoPedido) {
+
+		fluxoPedidoService.cancelar(codigoPedido);
+
+	}
+
 }
