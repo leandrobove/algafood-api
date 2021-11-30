@@ -22,7 +22,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
+import com.github.algafood.domain.event.PedidoConfirmadoEvent;
 import com.github.algafood.domain.exception.NegocioException;
 
 import lombok.AllArgsConstructor;
@@ -33,10 +35,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 
 @Entity
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,6 +106,8 @@ public class Pedido {
 	public void confirmar() {
 		this.setStatus(StatusPedido.CONFIRMADO);
 		this.setDataConfirmacao(OffsetDateTime.now());
+		
+		registerEvent(new PedidoConfirmadoEvent(this));
 	}
 
 	public void entregar() {
