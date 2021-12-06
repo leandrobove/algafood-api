@@ -1,5 +1,6 @@
 package com.github.algafood.api.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.github.algafood.api.assembler.FormaPagamentoAssembler;
 import com.github.algafood.api.assembler.input.FormaPagamentoInputDisassembler;
@@ -46,12 +49,34 @@ public class FormaPagamentoController {
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoDTO>> listar() {
+	public ResponseEntity<List<FormaPagamentoDTO>> listar(ServletWebRequest request) {
+		//desabilita o shallow ETag
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = "0";
+		
+		OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.findDataMaisRecenteAtualizacao();
+		
+		if(dataUltimaAtualizacao != null) {
+			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
+		}
+		
+		//verifica se a etag não foi alterada e retorna
+		if (request.checkNotModified(eTag)) {
+			return null;
+		} 
+		
+		//caso etag seja diferente, faz a consulta normalmente
+		List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
+		
 		List<FormaPagamentoDTO> formasPagamentoDto = formaPagamentoAssembler
-				.toListDTO(formaPagamentoRepository.findAll());
+				.toListDTO(formasPagamento);
 
 		//adiciona 10 segundos de cache
-		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10L, TimeUnit.SECONDS)).body(formasPagamentoDto);
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10L, TimeUnit.SECONDS).cachePublic())
+				.eTag(eTag)
+				.body(formasPagamentoDto);
 	}
 
 	@GetMapping(value = "/{formaPagamentoId}")
