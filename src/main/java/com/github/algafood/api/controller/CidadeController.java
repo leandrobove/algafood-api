@@ -27,6 +27,7 @@ import com.github.algafood.domain.service.CadastroCidadeService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(tags = "Cidades")
 
@@ -54,7 +55,7 @@ public class CidadeController {
 
 	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
-	public CidadeDTO buscar(@PathVariable Long cidadeId) {
+	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
 		return cidadeAssembler.toDTO(cidadeService.buscarOuFalhar(cidadeId));
 	}
 
@@ -71,7 +72,7 @@ public class CidadeController {
 
 	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@PutMapping(value = "/{cidadeId}")
-	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeDTOInput) {
+	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeDTOInput) {
 
 		var cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
@@ -87,7 +88,7 @@ public class CidadeController {
 	@ApiOperation(value = "Exclui uma cidade por ID")
 	@DeleteMapping(value = "/{cidadeId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public void deletar(@PathVariable Long cidadeId) {
+	public void deletar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
 		cidadeService.excluir(cidadeId);
 	}
 }
