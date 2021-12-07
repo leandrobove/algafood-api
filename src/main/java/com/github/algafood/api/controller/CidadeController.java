@@ -25,6 +25,11 @@ import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.repository.CidadeRepository;
 import com.github.algafood.domain.service.CadastroCidadeService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(tags = "Cidades")
+
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {
@@ -41,16 +46,19 @@ public class CidadeController {
 	@Autowired
 	private CidadeInputDisassembler cidadeInputDisassembler;
 
+	@ApiOperation(value = "Lista as cidades")
 	@GetMapping
 	public List<CidadeDTO> listar() {
 		return cidadeAssembler.toListDTO(cidadeRepository.findAll());
 	}
 
+	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		return cidadeAssembler.toDTO(cidadeService.buscarOuFalhar(cidadeId));
 	}
 
+	@ApiOperation(value = "Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
@@ -61,6 +69,7 @@ public class CidadeController {
 		}
 	}
 
+	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@PutMapping(value = "/{cidadeId}")
 	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeDTOInput) {
 
@@ -75,6 +84,7 @@ public class CidadeController {
 		}
 	}
 
+	@ApiOperation(value = "Exclui uma cidade por ID")
 	@DeleteMapping(value = "/{cidadeId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long cidadeId) {
