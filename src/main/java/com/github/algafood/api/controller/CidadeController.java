@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.algafood.api.ResourceUriHelper;
 import com.github.algafood.api.assembler.CidadeAssembler;
 import com.github.algafood.api.assembler.input.CidadeInputDisassembler;
 import com.github.algafood.api.dto.CidadeDTO;
 import com.github.algafood.api.dto.input.CidadeInput;
 import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.github.algafood.domain.exception.NegocioException;
+import com.github.algafood.domain.model.Cidade;
 import com.github.algafood.domain.repository.CidadeRepository;
 import com.github.algafood.domain.service.CadastroCidadeService;
 
@@ -64,7 +66,15 @@ public class CidadeController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
 		try {
-			return cidadeAssembler.toDTO(cidadeService.salvar(cidadeInputDisassembler.toCidade(cidadeDTOInput)));
+			Cidade cidade = cidadeInputDisassembler.toCidade(cidadeDTOInput);
+			
+			Cidade cidadeSalva = cidadeService.salvar(cidade);
+			
+			CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidadeSalva);
+			
+			ResourceUriHelper.addUriInResponseHeader(cidadeDTO.getId());
+			
+			return cidadeDTO;
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
