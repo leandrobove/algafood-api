@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,19 @@ public class CidadeController {
 	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
 	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
-		return cidadeAssembler.toDTO(cidadeService.buscarOuFalhar(cidadeId));
+		
+		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
+		
+		CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidade);
+		
+		//Hypermedia
+		cidadeDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).slash(cidadeDTO.getId()).withSelfRel());
+		cidadeDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
+		
+		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).slash(cidadeDTO.getEstado().getId()).withSelfRel());
+		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).withRel("estados"));
+		
+		return cidadeDTO;
 	}
 
 	@ApiOperation(value = "Cadastra uma cidade")
