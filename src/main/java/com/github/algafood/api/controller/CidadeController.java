@@ -5,7 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +32,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Api(tags = "Cidades")
 
 @RestController
@@ -52,8 +54,26 @@ public class CidadeController {
 
 	@ApiOperation(value = "Lista as cidades")
 	@GetMapping
-	public List<CidadeDTO> listar() {
-		return cidadeAssembler.toListDTO(cidadeRepository.findAll());
+	public CollectionModel<CidadeDTO> listar() {
+
+		List<Cidade> cidades = cidadeRepository.findAll();
+
+		List<CidadeDTO> cidadesDTO = cidadeAssembler.toListDTO(cidades);
+
+		cidadesDTO.forEach((cidadeDTO) -> {
+			cidadeDTO.add(linkTo(methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
+			cidadeDTO.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
+
+			cidadeDTO.getEstado()
+					.add(linkTo(methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId())).withSelfRel());
+			//cidadeDTO.getEstado().add(linkTo(methodOn(EstadoController.class).listar()).withRel("estados"));
+		});
+
+		CollectionModel<CidadeDTO> cidadesCollectionModel = CollectionModel.of(cidadesDTO);
+
+		cidadesCollectionModel.add(linkTo(methodOn(CidadeController.class).listar()).withSelfRel());
+
+		return cidadesCollectionModel;
 	}
 
 	@ApiOperation(value = "Busca uma cidade por ID")
@@ -65,17 +85,12 @@ public class CidadeController {
 		CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidade);
 
 		// Hypermedia
-		cidadeDTO.add(WebMvcLinkBuilder
-				.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
-		cidadeDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).listar())
-				.withRel("cidades"));
+		cidadeDTO.add(linkTo(methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
+		cidadeDTO.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
 
 		cidadeDTO.getEstado()
-				.add(WebMvcLinkBuilder.linkTo(
-						WebMvcLinkBuilder.methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId()))
-						.withSelfRel());
-		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class).listar())
-				.withRel("estados"));
+				.add(linkTo(methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId())).withSelfRel());
+		cidadeDTO.getEstado().add(linkTo(methodOn(EstadoController.class).listar()).withRel("estados"));
 
 		return cidadeDTO;
 	}
