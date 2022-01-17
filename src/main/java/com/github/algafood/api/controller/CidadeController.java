@@ -59,18 +59,24 @@ public class CidadeController {
 	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
 	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
-		
+
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
-		
+
 		CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidade);
-		
-		//Hypermedia
-		cidadeDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).slash(cidadeDTO.getId()).withSelfRel());
-		cidadeDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
-		
-		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).slash(cidadeDTO.getEstado().getId()).withSelfRel());
-		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).withRel("estados"));
-		
+
+		// Hypermedia
+		cidadeDTO.add(WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
+		cidadeDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).listar())
+				.withRel("cidades"));
+
+		cidadeDTO.getEstado()
+				.add(WebMvcLinkBuilder.linkTo(
+						WebMvcLinkBuilder.methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId()))
+						.withSelfRel());
+		cidadeDTO.getEstado().add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EstadoController.class).listar())
+				.withRel("estados"));
+
 		return cidadeDTO;
 	}
 
@@ -80,13 +86,13 @@ public class CidadeController {
 	public CidadeDTO cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
 		try {
 			Cidade cidade = cidadeInputDisassembler.toCidade(cidadeDTOInput);
-			
+
 			Cidade cidadeSalva = cidadeService.salvar(cidade);
-			
+
 			CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidadeSalva);
-			
+
 			ResourceUriHelper.addUriInResponseHeader(cidadeDTO.getId());
-			
+
 			return cidadeDTO;
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
@@ -95,7 +101,8 @@ public class CidadeController {
 
 	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@PutMapping(value = "/{cidadeId}")
-	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeDTOInput) {
+	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
+			@RequestBody @Valid CidadeInput cidadeDTOInput) {
 
 		var cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
