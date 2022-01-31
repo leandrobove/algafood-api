@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,19 +38,21 @@ public class UsuarioController {
 	private CadastroUsuarioService usuarioService;
 
 	@Autowired
-	private UsuarioModelAssembler usuarioAssembler;
+	private UsuarioModelAssembler usuarioModelAssembler;
 
 	@Autowired
 	UsuarioInputDisassembler usuarioInputDisassembler;
 
 	@GetMapping
-	public List<UsuarioModel> listar() {
-		return usuarioAssembler.toCollectionModel(usuarioRepository.findAll());
+	public CollectionModel<UsuarioModel> listar() {
+		List<Usuario> usuarios = usuarioRepository.findAll();
+		
+		return usuarioModelAssembler.toCollectionModel(usuarios);
 	}
 
 	@GetMapping(value = "/{usuarioId}")
 	public UsuarioModel buscarPorId(@PathVariable Long usuarioId) {
-		return usuarioAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
+		return usuarioModelAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 	}
 
 	@PostMapping
@@ -58,7 +61,7 @@ public class UsuarioController {
 
 		Usuario usuario = usuarioInputDisassembler.toUsuario(usuarioComSenhaInput);
 
-		return usuarioAssembler.toModel(usuarioService.salvar(usuario));
+		return usuarioModelAssembler.toModel(usuarioService.salvar(usuario));
 	}
 
 	@PutMapping(value = "/{usuarioId}")
@@ -68,7 +71,7 @@ public class UsuarioController {
 
 		usuarioInputDisassembler.copyToDomainObject(usuarioSemSenhaInput, usuarioAtual);
 
-		return usuarioAssembler.toModel(usuarioService.salvar(usuarioAtual));
+		return usuarioModelAssembler.toModel(usuarioService.salvar(usuarioAtual));
 	}
 
 	@DeleteMapping(value = "/{usuarioId}")
