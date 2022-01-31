@@ -31,11 +31,11 @@ public abstract class GenericModelAssembler<E, M> {
 		this.modelDTO = (Class<M>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
 	}
 
-	public M toDTO(E model) {
+	public M toModel(E model) {
 		return modelMapper.map(model, this.getModelDTO());
 	}
 
-	public List<M> toListDTO(Collection<E> modelList) {
-		return modelList.stream().map((m) -> this.toDTO(m)).collect(Collectors.toList());
+	public List<M> toCollectionModel(Collection<E> modelList) {
+		return modelList.stream().map((m) -> this.toModel(m)).collect(Collectors.toList());
 	}
 }

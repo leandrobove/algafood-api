@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PedidoDTO {
+public class PedidoModel {
 
 	private String codigo;
 	private BigDecimal subtotal;
@@ -21,10 +21,10 @@ public class PedidoDTO {
 	private OffsetDateTime dataEntrega;
 	private OffsetDateTime dataCancelamento;
 
-	private RestauranteResumoDTO restaurante;
-	private UsuarioDTO cliente;
-	private FormaPagamentoDTO formaPagamento;
-	private EnderecoDTO enderecoEntrega;
-	private List<ItemPedidoDTO> itens;
+	private RestauranteResumoModel restaurante;
+	private UsuarioModel cliente;
+	private FormaPagamentoModel formaPagamento;
+	private EnderecoModel enderecoEntrega;
+	private List<ItemPedidoModel> itens;
 	
 }

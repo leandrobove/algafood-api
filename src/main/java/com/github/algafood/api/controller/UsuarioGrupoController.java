@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.GrupoAssembler;
-import com.github.algafood.api.dto.GrupoDTO;
+import com.github.algafood.api.assembler.GrupoModelAssembler;
+import com.github.algafood.api.dto.GrupoModel;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.service.CadastroUsuarioService;
 
@@ -25,13 +25,13 @@ public class UsuarioGrupoController {
 	private CadastroUsuarioService usuarioService;
 
 	@Autowired
-	private GrupoAssembler grupoAssembler;
+	private GrupoModelAssembler grupoAssembler;
 
 	@GetMapping
-	public List<GrupoDTO> listar(@PathVariable Long usuarioId) {
+	public List<GrupoModel> listar(@PathVariable Long usuarioId) {
 		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
 
-		return grupoAssembler.toListDTO(usuario.getGrupos());
+		return grupoAssembler.toCollectionModel(usuario.getGrupos());
 	}
 
 	@PutMapping(value = "/{grupoId}")

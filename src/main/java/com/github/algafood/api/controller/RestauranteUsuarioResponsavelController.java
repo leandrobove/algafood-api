@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.UsuarioAssembler;
-import com.github.algafood.api.dto.UsuarioDTO;
+import com.github.algafood.api.assembler.UsuarioModelAssembler;
+import com.github.algafood.api.dto.UsuarioModel;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.service.CadastroRestauranteService;
 
@@ -25,14 +25,14 @@ public class RestauranteUsuarioResponsavelController {
 	private CadastroRestauranteService restauranteService;
 
 	@Autowired
-	private UsuarioAssembler usuarioAssembler;
+	private UsuarioModelAssembler usuarioAssembler;
 
 	@GetMapping
-	public List<UsuarioDTO> listar(@PathVariable Long restauranteId) {
+	public List<UsuarioModel> listar(@PathVariable Long restauranteId) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
-		return usuarioAssembler.toListDTO(restaurante.getResponsaveis());
+		return usuarioAssembler.toCollectionModel(restaurante.getResponsaveis());
 	}
 
 	@PutMapping(value = "/{usuarioId}")

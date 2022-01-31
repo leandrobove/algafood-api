@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ItemPedidoDTO {
+public class ItemPedidoModel {
 
 	private Long produtoId;
 

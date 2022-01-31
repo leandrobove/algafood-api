@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.algafood.api.assembler.FotoProdutoAssembler;
-import com.github.algafood.api.dto.FotoProdutoDTO;
+import com.github.algafood.api.assembler.FotoProdutoModelAssembler;
+import com.github.algafood.api.dto.FotoProdutoModel;
 import com.github.algafood.api.dto.input.FotoProdutoInput;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.model.FotoProduto;
@@ -43,13 +43,13 @@ public class RestauranteFotoProdutoController {
 	private CadastroProdutoService cadastroProdutoService;
 
 	@Autowired
-	private FotoProdutoAssembler fotoProdutoAssembler;
+	private FotoProdutoModelAssembler fotoProdutoAssembler;
 
 	@Autowired
 	private DiscoLocalFotoStorageService discoLocalFotoStorageService;
 
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public FotoProdutoDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+	public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@Valid FotoProdutoInput fotoProdutoInput) throws IOException {
 
 		Produto produto = cadastroProdutoService.buscarOuFalhar(produtoId, restauranteId);
@@ -66,15 +66,15 @@ public class RestauranteFotoProdutoController {
 
 		FotoProduto fotoProdutoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
 
-		return fotoProdutoAssembler.toDTO(fotoProdutoSalva);
+		return fotoProdutoAssembler.toModel(fotoProdutoSalva);
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+	public FotoProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
-		return fotoProdutoAssembler.toDTO(fotoProduto);
+		return fotoProdutoAssembler.toModel(fotoProduto);
 	}
 
 	@GetMapping

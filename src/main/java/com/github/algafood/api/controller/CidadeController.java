@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.ResourceUriHelper;
-import com.github.algafood.api.assembler.CidadeAssembler;
+import com.github.algafood.api.assembler.CidadeModelAssembler;
 import com.github.algafood.api.assembler.input.CidadeInputDisassembler;
-import com.github.algafood.api.dto.CidadeDTO;
+import com.github.algafood.api.dto.CidadeModel;
 import com.github.algafood.api.dto.input.CidadeInput;
 import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.github.algafood.domain.exception.NegocioException;
@@ -31,8 +31,6 @@ import com.github.algafood.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Api(tags = "Cidades")
 
@@ -47,64 +45,39 @@ public class CidadeController {
 	private CadastroCidadeService cidadeService;
 
 	@Autowired
-	private CidadeAssembler cidadeAssembler;
+	private CidadeModelAssembler cidadeModelAssembler;
 
 	@Autowired
 	private CidadeInputDisassembler cidadeInputDisassembler;
 
 	@ApiOperation(value = "Lista as cidades")
 	@GetMapping
-	public CollectionModel<CidadeDTO> listar() {
+	public CollectionModel<CidadeModel> listar() {
 
 		List<Cidade> cidades = cidadeRepository.findAll();
 
-		List<CidadeDTO> cidadesDTO = cidadeAssembler.toListDTO(cidades);
-
-		cidadesDTO.forEach((cidadeDTO) -> {
-			cidadeDTO.add(linkTo(methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
-			cidadeDTO.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-
-			cidadeDTO.getEstado()
-					.add(linkTo(methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId())).withSelfRel());
-			//cidadeDTO.getEstado().add(linkTo(methodOn(EstadoController.class).listar()).withRel("estados"));
-		});
-
-		CollectionModel<CidadeDTO> cidadesCollectionModel = CollectionModel.of(cidadesDTO);
-
-		cidadesCollectionModel.add(linkTo(methodOn(CidadeController.class).listar()).withSelfRel());
-
-		return cidadesCollectionModel;
+		return cidadeModelAssembler.toCollectionModel(cidades);
 	}
 
 	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
-	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
+	public CidadeModel buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
 
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 
-		CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidade);
-
-		// Hypermedia
-		cidadeDTO.add(linkTo(methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
-		cidadeDTO.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-
-		cidadeDTO.getEstado()
-				.add(linkTo(methodOn(EstadoController.class).buscar(cidadeDTO.getEstado().getId())).withSelfRel());
-		cidadeDTO.getEstado().add(linkTo(methodOn(EstadoController.class).listar()).withRel("estados"));
-
-		return cidadeDTO;
+		return cidadeModelAssembler.toModel(cidade);
 	}
 
 	@ApiOperation(value = "Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDTO cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
+	public CidadeModel cadastrar(@RequestBody @Valid CidadeInput cidadeDTOInput) {
 		try {
 			Cidade cidade = cidadeInputDisassembler.toCidade(cidadeDTOInput);
 
 			Cidade cidadeSalva = cidadeService.salvar(cidade);
 
-			CidadeDTO cidadeDTO = cidadeAssembler.toDTO(cidadeSalva);
+			CidadeModel cidadeDTO = cidadeModelAssembler.toModel(cidadeSalva);
 
 			ResourceUriHelper.addUriInResponseHeader(cidadeDTO.getId());
 
@@ -116,7 +89,7 @@ public class CidadeController {
 
 	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@PutMapping(value = "/{cidadeId}")
-	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
+	public CidadeModel atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
 			@RequestBody @Valid CidadeInput cidadeDTOInput) {
 
 		var cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
@@ -124,7 +97,7 @@ public class CidadeController {
 		cidadeInputDisassembler.copyToDomainObject(cidadeDTOInput, cidadeAtual);
 
 		try {
-			return cidadeAssembler.toDTO(cidadeService.salvar(cidadeAtual));
+			return cidadeModelAssembler.toModel(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

@@ -5,12 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UsuarioDTO {
+public class RestauranteResumoModel {
 
 	private Long id;
-
+	
 	private String nome;
-
-	private String email;
 
 }

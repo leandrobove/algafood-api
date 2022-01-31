@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.UsuarioAssembler;
+import com.github.algafood.api.assembler.UsuarioModelAssembler;
 import com.github.algafood.api.assembler.input.UsuarioInputDisassembler;
-import com.github.algafood.api.dto.UsuarioDTO;
+import com.github.algafood.api.dto.UsuarioModel;
 import com.github.algafood.api.dto.input.SenhaInput;
 import com.github.algafood.api.dto.input.UsuarioComSenhaInput;
 import com.github.algafood.api.dto.input.UsuarioSemSenhaInput;
@@ -37,38 +37,38 @@ public class UsuarioController {
 	private CadastroUsuarioService usuarioService;
 
 	@Autowired
-	private UsuarioAssembler usuarioAssembler;
+	private UsuarioModelAssembler usuarioAssembler;
 
 	@Autowired
 	UsuarioInputDisassembler usuarioInputDisassembler;
 
 	@GetMapping
-	public List<UsuarioDTO> listar() {
-		return usuarioAssembler.toListDTO(usuarioRepository.findAll());
+	public List<UsuarioModel> listar() {
+		return usuarioAssembler.toCollectionModel(usuarioRepository.findAll());
 	}
 
 	@GetMapping(value = "/{usuarioId}")
-	public UsuarioDTO buscarPorId(@PathVariable Long usuarioId) {
-		return usuarioAssembler.toDTO(usuarioService.buscarOuFalhar(usuarioId));
+	public UsuarioModel buscarPorId(@PathVariable Long usuarioId) {
+		return usuarioAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 	}
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public UsuarioDTO cadastrar(@RequestBody @Valid UsuarioComSenhaInput usuarioComSenhaInput) {
+	public UsuarioModel cadastrar(@RequestBody @Valid UsuarioComSenhaInput usuarioComSenhaInput) {
 
 		Usuario usuario = usuarioInputDisassembler.toUsuario(usuarioComSenhaInput);
 
-		return usuarioAssembler.toDTO(usuarioService.salvar(usuario));
+		return usuarioAssembler.toModel(usuarioService.salvar(usuario));
 	}
 
 	@PutMapping(value = "/{usuarioId}")
-	public UsuarioDTO atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioSemSenhaInput usuarioSemSenhaInput) {
+	public UsuarioModel atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioSemSenhaInput usuarioSemSenhaInput) {
 
 		Usuario usuarioAtual = usuarioService.buscarOuFalhar(usuarioId);
 
 		usuarioInputDisassembler.copyToDomainObject(usuarioSemSenhaInput, usuarioAtual);
 
-		return usuarioAssembler.toDTO(usuarioService.salvar(usuarioAtual));
+		return usuarioAssembler.toModel(usuarioService.salvar(usuarioAtual));
 	}
 
 	@DeleteMapping(value = "/{usuarioId}")

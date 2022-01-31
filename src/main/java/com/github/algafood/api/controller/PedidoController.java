@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.PedidoAssembler;
-import com.github.algafood.api.assembler.PedidoResumoDTOAssembler;
+import com.github.algafood.api.assembler.PedidoModelAssembler;
+import com.github.algafood.api.assembler.PedidoResumoModelAssembler;
 import com.github.algafood.api.assembler.input.PedidoInputDisassembler;
-import com.github.algafood.api.dto.PedidoDTO;
-import com.github.algafood.api.dto.PedidoResumoDTO;
+import com.github.algafood.api.dto.PedidoModel;
+import com.github.algafood.api.dto.PedidoResumoModel;
 import com.github.algafood.api.dto.input.PedidoInput;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
@@ -41,10 +41,10 @@ public class PedidoController {
 	private PedidoRepository pedidoRepository;
 
 	@Autowired
-	private PedidoAssembler pedidoAssembler;
+	private PedidoModelAssembler pedidoAssembler;
 
 	@Autowired
-	private PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
+	private PedidoResumoModelAssembler pedidoResumoDTOAssembler;
 
 	@Autowired
 	private EmissaoPedidoService emissaoPedidoService;
@@ -53,24 +53,24 @@ public class PedidoController {
 	private PedidoInputDisassembler pedidoInputDisassembler;
 
 	@GetMapping
-	public Page<PedidoResumoDTO> listarComFiltro(PedidoFilter pedidoFilter,
+	public Page<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
 			@PageableDefault(size = 10) Pageable pageable) {
 		
 		Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageable);
 
-		List<PedidoResumoDTO> pedidosDTOPage = pedidoResumoDTOAssembler.toListDTO(pedidoPage.getContent());
+		List<PedidoResumoModel> pedidosDTOPage = pedidoResumoDTOAssembler.toCollectionModel(pedidoPage.getContent());
 
-		return new PageImpl<PedidoResumoDTO>(pedidosDTOPage, pageable, pedidoPage.getTotalElements());
+		return new PageImpl<PedidoResumoModel>(pedidosDTOPage, pageable, pedidoPage.getTotalElements());
 	}
 
 	@GetMapping(value = "/{codigoPedido}")
-	public PedidoDTO buscar(@PathVariable String codigoPedido) {
-		return pedidoAssembler.toDTO(emissaoPedidoService.buscarOuFalhar(codigoPedido));
+	public PedidoModel buscar(@PathVariable String codigoPedido) {
+		return pedidoAssembler.toModel(emissaoPedidoService.buscarOuFalhar(codigoPedido));
 	}
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public PedidoDTO cadastrar(@RequestBody @Valid PedidoInput pedidoInput) {
+	public PedidoModel cadastrar(@RequestBody @Valid PedidoInput pedidoInput) {
 
 		try {
 			Pedido pedido = pedidoInputDisassembler.toPedido(pedidoInput);
@@ -83,7 +83,7 @@ public class PedidoController {
 
 			Pedido pedidoSalvo = emissaoPedidoService.emitir(pedido);
 
-			return pedidoAssembler.toDTO(pedidoSalvo);
+			return pedidoAssembler.toModel(pedidoSalvo);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}

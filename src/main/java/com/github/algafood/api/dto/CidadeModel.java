@@ -10,12 +10,12 @@ import lombok.Setter;
 @Setter
 
 @Relation(collectionRelation = "cidades")
-public class CidadeDTO extends RepresentationModel<CidadeDTO> {
+public class CidadeModel extends RepresentationModel<CidadeModel> {
 
 	private Long id;
 
 	private String nome;
 
-	private EstadoDTO estado;
+	private EstadoModel estado;
 
 }

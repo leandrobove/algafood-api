@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.assembler.ProdutoAssembler;
+import com.github.algafood.api.assembler.ProdutoModelAssembler;
 import com.github.algafood.api.assembler.input.ProdutoInputDisassembler;
-import com.github.algafood.api.dto.ProdutoDTO;
+import com.github.algafood.api.dto.ProdutoModel;
 import com.github.algafood.api.dto.input.ProdutoInput;
 import com.github.algafood.domain.model.Produto;
 import com.github.algafood.domain.model.Restaurante;
@@ -31,7 +31,7 @@ import com.github.algafood.domain.service.CadastroRestauranteService;
 public class RestauranteProdutoController {
 
 	@Autowired
-	private ProdutoAssembler produtoAssembler;
+	private ProdutoModelAssembler produtoAssembler;
 
 	@Autowired
 	private CadastroRestauranteService restauranteService;
@@ -46,7 +46,7 @@ public class RestauranteProdutoController {
 	private ProdutoRepository produtoRepository;
 
 	@GetMapping
-	public List<ProdutoDTO> listar(@PathVariable Long restauranteId,
+	public List<ProdutoModel> listar(@PathVariable Long restauranteId,
 			@RequestParam(required = false) boolean incluirInativos) {
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
@@ -60,33 +60,33 @@ public class RestauranteProdutoController {
 			restaurantesRetorno = produtoRepository.findAtivosByRestaurante(restaurante);
 		}
 
-		return produtoAssembler.toListDTO(restaurantesRetorno);
+		return produtoAssembler.toCollectionModel(restaurantesRetorno);
 	}
 
 	@GetMapping(value = "/{produtoId}")
-	public ProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+	public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		// trata exception caso o restaurante não exista
 		restauranteService.buscarOuFalhar(restauranteId);
 
 		Produto produto = produtoService.buscarOuFalhar(produtoId, restauranteId);
 
-		return produtoAssembler.toDTO(produto);
+		return produtoAssembler.toModel(produto);
 	}
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ProdutoDTO cadastrar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
+	public ProdutoModel cadastrar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
 
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
 		Produto produto = produtoInputDisassembler.toProduto(produtoInput);
 		produto.setRestaurante(restaurante);
 
-		return produtoAssembler.toDTO(produtoService.salvar(produto));
+		return produtoAssembler.toModel(produtoService.salvar(produto));
 	}
 
 	@PutMapping(value = "/{produtoId}")
-	public ProdutoDTO atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+	public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@RequestBody @Valid ProdutoInput produtoInput) {
 		// trata exception caso o restaurante não exista
 		restauranteService.buscarOuFalhar(restauranteId);
@@ -97,7 +97,7 @@ public class RestauranteProdutoController {
 
 		Produto produto = produtoService.salvar(produtoAtual);
 
-		return produtoAssembler.toDTO(produto);
+		return produtoAssembler.toModel(produto);
 	}
 
 }

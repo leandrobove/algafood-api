@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
-import com.github.algafood.api.assembler.FormaPagamentoAssembler;
+import com.github.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.github.algafood.api.assembler.input.FormaPagamentoInputDisassembler;
-import com.github.algafood.api.dto.FormaPagamentoDTO;
+import com.github.algafood.api.dto.FormaPagamentoModel;
 import com.github.algafood.api.dto.input.FormaPagamentoInput;
 import com.github.algafood.domain.exception.FormaPagamentoNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
@@ -43,13 +43,13 @@ public class FormaPagamentoController {
 	private FormaPagamentoRepository formaPagamentoRepository;
 
 	@Autowired
-	private FormaPagamentoAssembler formaPagamentoAssembler;
+	private FormaPagamentoModelAssembler formaPagamentoAssembler;
 
 	@Autowired
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoDTO>> listar(ServletWebRequest request) {
+	public ResponseEntity<List<FormaPagamentoModel>> listar(ServletWebRequest request) {
 		//desabilita o shallow ETag
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		
@@ -69,8 +69,8 @@ public class FormaPagamentoController {
 		//caso etag seja diferente, faz a consulta normalmente
 		List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 		
-		List<FormaPagamentoDTO> formasPagamentoDto = formaPagamentoAssembler
-				.toListDTO(formasPagamento);
+		List<FormaPagamentoModel> formasPagamentoDto = formaPagamentoAssembler
+				.toCollectionModel(formasPagamento);
 
 		//adiciona 10 segundos de cache
 		return ResponseEntity.ok()
@@ -80,7 +80,7 @@ public class FormaPagamentoController {
 	}
 
 	@GetMapping(value = "/{formaPagamentoId}")
-	public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
+	public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 		//desabilita o shallow ETag
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 				
@@ -98,7 +98,7 @@ public class FormaPagamentoController {
 		
 		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
 		
-		FormaPagamentoDTO formaPagamentoDto = formaPagamentoAssembler.toDTO(formaPagamento);
+		FormaPagamentoModel formaPagamentoDto = formaPagamentoAssembler.toModel(formaPagamento);
 		
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10L, TimeUnit.SECONDS))
@@ -108,11 +108,11 @@ public class FormaPagamentoController {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public FormaPagamentoDTO cadastrar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
+	public FormaPagamentoModel cadastrar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 		try {
 			FormaPagamento formaPagamento = formaPagamentoInputDisassembler.toFormaPagamento(formaPagamentoInput);
 
-			return formaPagamentoAssembler.toDTO(cadastroFormaPagamento.salvar(formaPagamento));
+			return formaPagamentoAssembler.toModel(cadastroFormaPagamento.salvar(formaPagamento));
 		} catch (FormaPagamentoNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -125,7 +125,7 @@ public class FormaPagamentoController {
 	}
 
 	@PutMapping(value = "/{formaPagamentoId}")
-	public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
+	public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
 			@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
 
 		FormaPagamento formaPagamentoAtual = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
@@ -134,7 +134,7 @@ public class FormaPagamentoController {
 
 		cadastroFormaPagamento.salvar(formaPagamentoAtual);
 
-		return formaPagamentoAssembler.toDTO(formaPagamentoAtual);
+		return formaPagamentoAssembler.toModel(formaPagamentoAtual);
 	}
 
 }
