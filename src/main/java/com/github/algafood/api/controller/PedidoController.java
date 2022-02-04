@@ -1,14 +1,13 @@
 package com.github.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,23 +43,26 @@ public class PedidoController {
 	private PedidoModelAssembler pedidoAssembler;
 
 	@Autowired
-	private PedidoResumoModelAssembler pedidoResumoDTOAssembler;
+	private PedidoResumoModelAssembler pedidoResumoModelAssembler;
 
 	@Autowired
 	private EmissaoPedidoService emissaoPedidoService;
 
 	@Autowired
 	private PedidoInputDisassembler pedidoInputDisassembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
 	@GetMapping
-	public Page<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
+	public PagedModel<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
 			@PageableDefault(size = 10) Pageable pageable) {
 		
 		Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageable);
-
-		List<PedidoResumoModel> pedidosDTOPage = pedidoResumoDTOAssembler.toCollectionModel(pedidoPage.getContent());
-
-		return new PageImpl<PedidoResumoModel>(pedidosDTOPage, pageable, pedidoPage.getTotalElements());
+		
+		PagedModel<PedidoResumoModel> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidoPage, pedidoResumoModelAssembler);
+		
+		return pedidosPagedModel;
 	}
 
 	@GetMapping(value = "/{codigoPedido}")

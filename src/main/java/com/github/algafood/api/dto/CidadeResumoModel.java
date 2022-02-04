@@ -1,11 +1,16 @@
 package com.github.algafood.api.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CidadeResumoModel {
+
+@Relation(collectionRelation = "cidades")
+public class CidadeResumoModel extends RepresentationModel<CidadeResumoModel> {
 
 	private Long id;
 

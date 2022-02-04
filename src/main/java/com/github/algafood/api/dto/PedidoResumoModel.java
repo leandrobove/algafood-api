@@ -3,12 +3,17 @@ package com.github.algafood.api.dto;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PedidoResumoModel {
+
+@Relation(collectionRelation = "pedidos")
+public class PedidoResumoModel extends RepresentationModel<PedidoResumoModel> {
 
 	private String codigo;
 	private BigDecimal subtotal;
