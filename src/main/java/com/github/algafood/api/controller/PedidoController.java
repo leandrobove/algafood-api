@@ -1,5 +1,7 @@
 package com.github.algafood.api.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import com.github.algafood.api.assembler.input.PedidoInputDisassembler;
 import com.github.algafood.api.dto.PedidoModel;
 import com.github.algafood.api.dto.PedidoResumoModel;
 import com.github.algafood.api.dto.input.PedidoInput;
+import com.github.algafood.domain.core.data.PageWrapper;
+import com.github.algafood.domain.core.data.PageableTranslator;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.filter.PedidoFilter;
@@ -50,7 +54,7 @@ public class PedidoController {
 
 	@Autowired
 	private PedidoInputDisassembler pedidoInputDisassembler;
-	
+
 	@Autowired
 	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
@@ -58,10 +62,15 @@ public class PedidoController {
 	public PagedModel<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
 			@PageableDefault(size = 10) Pageable pageable) {
 		
-		Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageable);
+		Pageable pageableTraduzido = this.traduzirPageable(pageable);
+
+		Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageableTraduzido);
 		
-		PagedModel<PedidoResumoModel> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidoPage, pedidoResumoModelAssembler);
+		pedidosPage = new PageWrapper<Pedido>(pedidosPage, pageable);
 		
+		PagedModel<PedidoResumoModel> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidosPage,
+				pedidoResumoModelAssembler);
+
 		return pedidosPagedModel;
 	}
 
@@ -89,5 +98,22 @@ public class PedidoController {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+
+	private Pageable traduzirPageable(Pageable pageable) {
+
+		Map<String, String> mapeamento = Map.of(
+				"codigo", "codigo",
+				"subtotal", "subtotal",
+				"taxaFrete", "taxaFrete",
+				"valorTotal", "valorTotal",
+				"dataCriacao", "dataCriacao",
+				"nomerestaurante", "restaurante.nome",
+				"restaurante.id", "restaurante.id",
+				"cliente.id", "cliente.id",
+				"cliente.nome", "cliente.nome"
+		);
+
+		return PageableTranslator.translate(pageable, mapeamento);
 	}
 }
