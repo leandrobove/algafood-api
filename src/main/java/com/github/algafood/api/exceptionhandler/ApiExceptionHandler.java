@@ -33,6 +33,9 @@ import com.github.algafood.domain.exception.EntidadeEmUsoException;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -50,7 +53,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
 		String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
 
-		ex.printStackTrace();
+		log.error(ex.getMessage(), ex);
 
 		Problem problem = this.createProblemBuilder(status, problemType, detail).userMessage(detail).build();
 
