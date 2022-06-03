@@ -22,7 +22,7 @@ public class PedidoResumoModel extends RepresentationModel<PedidoResumoModel> {
 	private String status;
 	private OffsetDateTime dataCriacao;
 
-	private String restauranteNome;
+	private RestauranteApenasNomeModel restaurante;
 
 	private UsuarioModel cliente;
 
