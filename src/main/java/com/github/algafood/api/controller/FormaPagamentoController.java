@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class FormaPagamentoController {
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoModel>> listar(ServletWebRequest request) {
+	public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
 		//desabilita o shallow ETag
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		
@@ -69,7 +70,7 @@ public class FormaPagamentoController {
 		//caso etag seja diferente, faz a consulta normalmente
 		List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 		
-		List<FormaPagamentoModel> formasPagamentoDto = formaPagamentoAssembler
+		CollectionModel<FormaPagamentoModel> formasPagamentoDto = formaPagamentoAssembler
 				.toCollectionModel(formasPagamento);
 
 		//adiciona 10 segundos de cache
