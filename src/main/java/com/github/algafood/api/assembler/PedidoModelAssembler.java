@@ -26,12 +26,12 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
 	@Override
 	public PedidoModel toModel(Pedido pedido) {
 
-		PedidoModel pedidoModel = modelMapper.map(pedido, PedidoModel.class);
+		PedidoModel pedidoModel = this.createModelWithId(pedido.getCodigo(), pedido);
+				
+		modelMapper.map(pedido, pedidoModel);
 
-		// hypermedia Pedido
-		pedidoModel.add(algaLinksHelper.linkToPedido(pedidoModel.getCodigo()));
-
-		pedidoModel.add(algaLinksHelper.linkToPedidos());
+		// hypermedia Pedidos
+		pedidoModel.add(algaLinksHelper.linkToPedidos("pedidos"));
 		
 		if(pedido.podeSerConfirmado()) {
 			// Confirmação Pedido
