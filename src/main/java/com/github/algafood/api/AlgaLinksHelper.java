@@ -19,6 +19,7 @@ import com.github.algafood.api.controller.FormaPagamentoController;
 import com.github.algafood.api.controller.PedidoController;
 import com.github.algafood.api.controller.RestauranteController;
 import com.github.algafood.api.controller.RestauranteFormaPagamentoController;
+import com.github.algafood.api.controller.RestauranteFotoProdutoController;
 import com.github.algafood.api.controller.RestauranteProdutoController;
 import com.github.algafood.api.controller.RestauranteUsuarioResponsavelController;
 import com.github.algafood.api.controller.UsuarioController;
@@ -242,6 +243,15 @@ public class AlgaLinksHelper {
 
 	public Link linkToProdutos(Long restauranteId) {
 	    return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToFotoProduto(Long restauranteId, Long produtoId, String rel) {
+	    return linkTo(methodOn(RestauranteFotoProdutoController.class)
+	            .buscar(restauranteId, produtoId)).withRel(rel);
+	}
+
+	public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
+	    return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
 	}
 
 }
