@@ -1,10 +1,9 @@
 package com.github.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +40,7 @@ public class GrupoController {
 	private GrupoInputDisassembler grupoInputDisassembler;
 
 	@GetMapping
-	public List<GrupoModel> listar() {
+	public CollectionModel<GrupoModel> listar() {
 		return grupoAssembler.toCollectionModel(grupoRepository.findAll());
 	}
 

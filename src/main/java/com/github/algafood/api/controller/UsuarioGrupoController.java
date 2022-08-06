@@ -1,8 +1,7 @@
 package com.github.algafood.api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.GrupoModelAssembler;
 import com.github.algafood.api.dto.GrupoModel;
 import com.github.algafood.domain.model.Usuario;
@@ -26,12 +26,17 @@ public class UsuarioGrupoController {
 
 	@Autowired
 	private GrupoModelAssembler grupoAssembler;
+	
+	@Autowired
+	private AlgaLinksHelper algaLinksHelper;
 
 	@GetMapping
-	public List<GrupoModel> listar(@PathVariable Long usuarioId) {
-		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+	public CollectionModel<GrupoModel> listar(@PathVariable Long usuarioId) {
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId); 
 
-		return grupoAssembler.toCollectionModel(usuario.getGrupos());
+		return grupoAssembler.toCollectionModel(usuario.getGrupos())
+				.removeLinks()
+				.add(algaLinksHelper.linkToGruposUsuario(usuario.getId()));
 	}
 
 	@PutMapping(value = "/{grupoId}")
