@@ -3,6 +3,8 @@ package com.github.algafood.api;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.Arrays;
+
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.TemplateVariable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.github.algafood.api.controller.CidadeController;
 import com.github.algafood.api.controller.CozinhaController;
 import com.github.algafood.api.controller.EstadoController;
+import com.github.algafood.api.controller.EstatisticasController;
 import com.github.algafood.api.controller.FluxoPedidoController;
 import com.github.algafood.api.controller.FormaPagamentoController;
 import com.github.algafood.api.controller.GrupoController;
@@ -49,6 +52,21 @@ public class AlgaLinksHelper {
 		String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
 
 		return Link.of(UriTemplate.of(pedidosUrl, PAGINACAO_VARIABLES.concat(filterVariables)), rel);
+	}
+	
+	public Link linkToEstatisticasVendasDiarias(String rel) {
+		
+		TemplateVariables filterVariables = new TemplateVariables(Arrays.asList(
+				new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
+				new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
+				new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM),
+				new TemplateVariable("timeOffset", VariableType.REQUEST_PARAM)
+		));
+		
+		String pedidosUrl = linkTo(methodOn(EstatisticasController.class)
+				.listarPorVendasDiarias(null, null)).toUri().toString();
+		
+		return Link.of(UriTemplate.of(pedidosUrl, filterVariables), rel);
 	}
 
 	public Link linkToPedido(String codigoPedido, String rel) {
@@ -295,6 +313,14 @@ public class AlgaLinksHelper {
 
 	public Link linkToGrupoPermissaoDesassociacao(Long grupoId, Long permissaoId, String rel) {
 		return linkTo(methodOn(GrupoPermissaoController.class).desassociar(grupoId, permissaoId)).withRel(rel);
+	}
+
+	public Link linkToEstatisticas(String rel) {
+		return linkTo(EstatisticasController.class).withRel(rel);
+	}
+	
+	public Link linkToEstatisticas() {
+		return linkToEstatisticas(IanaLinkRelations.SELF_VALUE);
 	}
 
 }
