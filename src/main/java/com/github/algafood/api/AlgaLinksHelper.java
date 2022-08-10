@@ -74,6 +74,14 @@ public class AlgaLinksHelper {
 	public Link linkToUsuario(Long usuarioId) {
 		return this.linkToUsuario(usuarioId, IanaLinkRelations.SELF_VALUE);
 	}
+	
+	public Link linkToUsuarioGrupoAssociacao(Long usuarioId, String rel) {
+		return linkTo(methodOn(UsuarioGrupoController.class).associarGrupo(usuarioId, null)).withRel(rel);
+	}
+
+	public Link linkToUsuarioGrupoDessociacao(Long usuarioId, Long grupoId, String rel) {
+		return linkTo(methodOn(UsuarioGrupoController.class).desassociarGrupo(usuarioId, grupoId)).withRel(rel);
+	}
 
 	public Link linkToFormaPagamento(Long formaPagamentoId, String rel) {
 		return linkTo(methodOn(FormaPagamentoController.class).buscar(formaPagamentoId, null)).withRel(rel);
