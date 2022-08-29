@@ -7,9 +7,9 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 
@@ -24,7 +24,7 @@ import io.restassured.http.ContentType;
 @TestPropertySource(value = "/application-test.properties")
 public class CozinhaControllerTest {
 
-	@LocalServerPort
+	@Value("${local.server.port}")
 	private int port;
 
 	@Autowired
@@ -63,7 +63,7 @@ public class CozinhaControllerTest {
 		.when()
 			.get()
 		.then()
-			.body("", Matchers.hasSize(2)).body("nome", Matchers.hasItems("Tailandesa", "Indiana"));
+			.body("_embedded.cozinhas", Matchers.hasSize(2));
 	}
 
 	@Test
