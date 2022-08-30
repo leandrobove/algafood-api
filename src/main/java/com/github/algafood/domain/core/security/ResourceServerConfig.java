@@ -16,7 +16,8 @@ public class ResourceServerConfig {
 	@Bean
 	public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/oauth2/**").authenticated()
+			//.antMatchers("/oauth2/**").authenticated()
+			.anyRequest().authenticated()
 		.and()
 			.cors()
 		.and()
@@ -24,7 +25,7 @@ public class ResourceServerConfig {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 			.oauth2ResourceServer()
-				.opaqueToken();
+				.jwt();
 		
 		return http.build();
 	}
