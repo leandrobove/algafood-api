@@ -50,12 +50,8 @@ public class Usuario {
 	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	private Set<Grupo> grupos = new HashSet<Grupo>();
 
-	public Boolean senhaCoincideCom(String senha) {
-		return senha.equals(this.getSenha());
-	}
-
-	public Boolean senhaNaoCoincideCom(String senha) {
-		return !senhaCoincideCom(senha);
+	public Boolean isNovo() {
+		return this.getId() == null;
 	}
 
 	public Boolean adicionarGrupo(Grupo grupo) {
