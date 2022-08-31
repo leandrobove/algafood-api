@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +28,7 @@ public class JpaUserDetailsService implements UserDetailsService {
 		Usuario usuario = usuarioRepository.findByEmail(username)
 				.orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado com o e-mail informado"));
 
-		return new AuthUser(usuario, this.getAuthorities(usuario));
+		return new User(usuario.getEmail(), usuario.getSenha(), this.getAuthorities(usuario));
 	}
 	
 	private Collection<GrantedAuthority> getAuthorities(Usuario usuario) {
