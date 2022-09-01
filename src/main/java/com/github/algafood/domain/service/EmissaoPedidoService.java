@@ -57,11 +57,16 @@ public class EmissaoPedidoService {
 		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(pedido.getFormaPagamento().getId());
 
 		pedido.setTaxaFrete(restaurante.getTaxaFrete());
+		pedido.getEnderecoEntrega().setCidade(cidade);
+		pedido.setCliente(cliente);
+		pedido.setRestaurante(restaurante);
 
 		if (restaurante.naoAceitaFormaPagamento(formaPagamento)) {
 			throw new NegocioException(String.format("Forma de pagamento %s não é aceita por este restaurante.",
 					formaPagamento.getDescricao()));
 		}
+		
+		pedido.setFormaPagamento(formaPagamento);
 	}
 
 	private void validarItensPedido(Pedido pedido) {

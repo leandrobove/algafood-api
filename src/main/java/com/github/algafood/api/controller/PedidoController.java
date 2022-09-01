@@ -27,6 +27,7 @@ import com.github.algafood.api.dto.PedidoResumoModel;
 import com.github.algafood.api.dto.input.PedidoInput;
 import com.github.algafood.domain.core.data.PageWrapper;
 import com.github.algafood.domain.core.data.PageableTranslator;
+import com.github.algafood.domain.core.security.AlgaSecurity;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.filter.PedidoFilter;
@@ -57,6 +58,9 @@ public class PedidoController {
 
 	@Autowired
 	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	@GetMapping
 	public PagedModel<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
@@ -86,15 +90,13 @@ public class PedidoController {
 		try {
 			Pedido pedido = pedidoInputDisassembler.toPedido(pedidoInput);
 
-			// autenticar usuario
-			Usuario cliente = new Usuario();
-			cliente.setId(1L);
+			// pega o id do cliente através do token JWT autenticado
+			pedido.setCliente(new Usuario());
+			pedido.getCliente().setId(algaSecurity.getUsuarioId());
 
-			pedido.setCliente(cliente);
+			pedido = emissaoPedidoService.emitir(pedido);
 
-			Pedido pedidoSalvo = emissaoPedidoService.emitir(pedido);
-
-			return pedidoAssembler.toModel(pedidoSalvo);
+			return pedidoAssembler.toModel(pedido);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
