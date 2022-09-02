@@ -6,7 +6,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import com.github.algafood.domain.core.email.EmailProperties;
+import com.github.algafood.core.email.EmailProperties;
 
 public class SandboxEnvioEmailService extends SmtpEnvioEmailService{
 

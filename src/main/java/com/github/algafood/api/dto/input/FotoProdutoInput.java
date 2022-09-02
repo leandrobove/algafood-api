@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.algafood.domain.core.validation.FileContentType;
-import com.github.algafood.domain.core.validation.FileSize;
+import com.github.algafood.core.validation.FileContentType;
+import com.github.algafood.core.validation.FileSize;
 
 import lombok.Getter;
 import lombok.Setter;

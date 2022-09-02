@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.AlgaLinksHelper;
-import com.github.algafood.domain.core.validation.Offset;
+import com.github.algafood.core.validation.Offset;
 import com.github.algafood.domain.filter.VendaDiariaFilter;
 import com.github.algafood.domain.model.dto.VendaDiaria;
 import com.github.algafood.domain.service.VendaQueryService;

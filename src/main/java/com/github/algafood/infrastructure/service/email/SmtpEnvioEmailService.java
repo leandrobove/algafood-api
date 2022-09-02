@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import com.github.algafood.domain.core.email.EmailProperties;
+import com.github.algafood.core.email.EmailProperties;
 import com.github.algafood.domain.service.EnvioEmailService;
 
 import freemarker.template.Configuration;

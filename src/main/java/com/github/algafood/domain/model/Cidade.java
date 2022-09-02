@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
-import com.github.algafood.domain.core.validation.Groups;
+import com.github.algafood.core.validation.Groups;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
