@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,19 +24,10 @@ public class ResourceServerConfig {
 		
 	@Bean
 	public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-			//.antMatchers("/oauth2/**").authenticated()
-			.antMatchers(HttpMethod.POST, "/cozinhas/**").hasAuthority("EDITAR_COZINHAS")
-			.antMatchers(HttpMethod.PUT, "/cozinhas/**").hasAuthority("EDITAR_COZINHAS")
-			.antMatchers(HttpMethod.DELETE, "/cozinhas/**").hasAuthority("EDITAR_COZINHAS")
-			.antMatchers(HttpMethod.GET, "/cozinhas/**").authenticated()
-			.anyRequest().denyAll()
-		.and()
+		http
 			.cors()
 		.and()
 			.csrf().disable()
-			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		//.and()
 			.oauth2ResourceServer()
 				.jwt()
 				.jwtAuthenticationConverter(this.jwtAuthenticationConverter());
