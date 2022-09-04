@@ -26,6 +26,7 @@ import com.github.algafood.api.dto.RestauranteApenasNomeModel;
 import com.github.algafood.api.dto.RestauranteBasicoModel;
 import com.github.algafood.api.dto.RestauranteModel;
 import com.github.algafood.api.dto.input.RestauranteInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
@@ -56,11 +57,13 @@ public class RestauranteController {
 	@Autowired
 	private RestauranteInputDisassembler restauranteInputDisassembler;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<RestauranteBasicoModel> listar() {
 		return restauranteBasicoModelAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping(value = "/{id}")
 	public RestauranteModel buscar(@PathVariable Long id) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(id);
@@ -68,11 +71,13 @@ public class RestauranteController {
 		return restauranteAssembler.toModel(restaurante);
 	}
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping(params = "projecao=apenas-nome")
 	public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
 		return restauranteApenasNomeModelAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteModel cadastrar(@RequestBody @Valid RestauranteInput restauranteDTOInput) {
@@ -85,6 +90,7 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{id}")
 	public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteDTOInput) {
 
@@ -99,12 +105,14 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping(value = "/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long id) {
 		cadastroRestaurante.deletar(id);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{id}/ativo")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> ativar(@PathVariable(name = "id") Long restauranteId) {
@@ -113,6 +121,7 @@ public class RestauranteController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping(value = "/{id}/inativo")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> inativar(@PathVariable(name = "id") Long restauranteId) {
@@ -121,6 +130,7 @@ public class RestauranteController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/ativacoes")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -131,6 +141,7 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping(value = "/ativacoes")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -141,6 +152,7 @@ public class RestauranteController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{restauranteId}/abertura")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
@@ -149,6 +161,7 @@ public class RestauranteController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{restauranteId}/fechamento")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
@@ -156,48 +169,4 @@ public class RestauranteController {
 		
 		return ResponseEntity.noContent().build();
 	}
-
-	/*
-	 * @PatchMapping(value = "/{id}") public RestauranteDTO
-	 * atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object>
-	 * mapCampos, HttpServletRequest request) {
-	 * 
-	 * Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
-	 * 
-	 * // lambda expression merge(mapCampos, restauranteAtual, request);
-	 * 
-	 * return atualizar(id, restauranteAtual); }
-	 * 
-	 * private void merge(Map<String, Object> mapCamposOrigem, Restaurante
-	 * restauranteDestino, HttpServletRequest request) {
-	 * 
-	 * ServletServerHttpRequest serverHttpRequest = new
-	 * ServletServerHttpRequest(request);
-	 * 
-	 * try { ObjectMapper objectMapper = new ObjectMapper();
-	 * 
-	 * objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-	 * true);
-	 * objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-	 * true);
-	 * 
-	 * Restaurante restauranteOrigem = objectMapper.convertValue(mapCamposOrigem,
-	 * Restaurante.class);
-	 * 
-	 * mapCamposOrigem.forEach((chave, valor) -> { Field field =
-	 * ReflectionUtils.findField(Restaurante.class, chave);
-	 * field.setAccessible(true);
-	 * 
-	 * Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
-	 * 
-	 * ReflectionUtils.setField(field, restauranteDestino, novoValor); }); } catch
-	 * (IllegalArgumentException e) { // Relançar a exception para ser capturada no
-	 * handler Throwable rootCause = ExceptionUtils.getRootCause(e);
-	 * 
-	 * throw new HttpMessageNotReadableException(e.getMessage(), rootCause,
-	 * serverHttpRequest); }
-	 * 
-	 * }
-	 */
-
 }

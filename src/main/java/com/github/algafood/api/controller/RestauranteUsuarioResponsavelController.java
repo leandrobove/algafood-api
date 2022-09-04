@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.UsuarioModelAssembler;
 import com.github.algafood.api.dto.UsuarioModel;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.service.CadastroRestauranteService;
 
@@ -31,6 +32,7 @@ public class RestauranteUsuarioResponsavelController {
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioModel> listar(@PathVariable Long restauranteId) {
 
@@ -48,6 +50,7 @@ public class RestauranteUsuarioResponsavelController {
 		return usuariosModel;
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
@@ -56,6 +59,7 @@ public class RestauranteUsuarioResponsavelController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {

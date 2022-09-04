@@ -22,6 +22,7 @@ import com.github.algafood.api.assembler.ProdutoModelAssembler;
 import com.github.algafood.api.assembler.input.ProdutoInputDisassembler;
 import com.github.algafood.api.dto.ProdutoModel;
 import com.github.algafood.api.dto.input.ProdutoInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Produto;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.repository.ProdutoRepository;
@@ -50,6 +51,7 @@ public class RestauranteProdutoController {
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
 			@RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
@@ -69,6 +71,7 @@ public class RestauranteProdutoController {
 				.add(algaLinksHelper.linkToProdutos(restaurante.getId()));
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping(value = "/{produtoId}")
 	public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		// trata exception caso o restaurante não exista
@@ -79,6 +82,7 @@ public class RestauranteProdutoController {
 		return produtoAssembler.toModel(produto);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public ProdutoModel cadastrar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
@@ -91,6 +95,7 @@ public class RestauranteProdutoController {
 		return produtoAssembler.toModel(produtoService.salvar(produto));
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(value = "/{produtoId}")
 	public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@RequestBody @Valid ProdutoInput produtoInput) {

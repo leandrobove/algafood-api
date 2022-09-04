@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.algafood.api.assembler.FotoProdutoModelAssembler;
 import com.github.algafood.api.dto.FotoProdutoModel;
 import com.github.algafood.api.dto.input.FotoProdutoInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.model.FotoProduto;
 import com.github.algafood.domain.model.Produto;
@@ -48,6 +49,7 @@ public class RestauranteFotoProdutoController {
 	@Autowired
 	private DiscoLocalFotoStorageService discoLocalFotoStorageService;
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -69,6 +71,7 @@ public class RestauranteFotoProdutoController {
 		return fotoProdutoAssembler.toModel(fotoProdutoSalva);
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
@@ -77,6 +80,7 @@ public class RestauranteFotoProdutoController {
 		return fotoProdutoAssembler.toModel(fotoProduto);
 	}
 
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public ResponseEntity<InputStreamResource> baixarFoto(@PathVariable Long restauranteId,
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
@@ -98,6 +102,7 @@ public class RestauranteFotoProdutoController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void excluirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {	
