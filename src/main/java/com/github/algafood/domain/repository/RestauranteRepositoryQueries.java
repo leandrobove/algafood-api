@@ -11,4 +11,5 @@ public interface RestauranteRepositoryQueries {
 	List<Restaurante> buscarPorCozinhaId(Long cozinhaId);
 	List<Restaurante> buscarComFreteGratisENomeSemelhante(String nome);
 	List<Restaurante> buscarPorFormaPagamentoId(Long formaPagamentoId);
+	boolean isResponsavel(Long usuarioId, Long restauranteId);
 }

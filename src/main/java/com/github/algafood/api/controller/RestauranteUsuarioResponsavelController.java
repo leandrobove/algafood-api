@@ -32,7 +32,7 @@ public class RestauranteUsuarioResponsavelController {
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
 
-	@CheckSecurity.Restaurantes.PodeConsultar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@GetMapping
 	public CollectionModel<UsuarioModel> listar(@PathVariable Long restauranteId) {
 
@@ -50,7 +50,7 @@ public class RestauranteUsuarioResponsavelController {
 		return usuariosModel;
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@PutMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
@@ -59,7 +59,7 @@ public class RestauranteUsuarioResponsavelController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {

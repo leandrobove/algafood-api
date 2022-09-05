@@ -49,7 +49,7 @@ public class RestauranteFotoProdutoController {
 	@Autowired
 	private DiscoLocalFotoStorageService discoLocalFotoStorageService;
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -80,7 +80,6 @@ public class RestauranteFotoProdutoController {
 		return fotoProdutoAssembler.toModel(fotoProduto);
 	}
 
-	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public ResponseEntity<InputStreamResource> baixarFoto(@PathVariable Long restauranteId,
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
@@ -102,7 +101,7 @@ public class RestauranteFotoProdutoController {
 		}
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void excluirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {	

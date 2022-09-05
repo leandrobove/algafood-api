@@ -102,4 +102,18 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 		return query.getResultList();
 	}
 
+	@Override
+	public boolean isResponsavel(Long usuarioId, Long restauranteId) {
+		String jpql = "SELECT case when count(1) > 0 then true else false end "
+				+ "FROM Restaurante rest JOIN rest.responsaveis resp "
+				+ "WHERE rest.id = :restauranteId AND resp.id = :usuarioId";
+		
+		TypedQuery<Boolean> query = em.createQuery(jpql, Boolean.class);
+		
+		query.setParameter("restauranteId", restauranteId);
+		query.setParameter("usuarioId", usuarioId);
+		
+		return query.getSingleResult();
+	}
+
 }
