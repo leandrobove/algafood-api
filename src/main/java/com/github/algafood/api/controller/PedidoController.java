@@ -86,6 +86,7 @@ public class PedidoController {
 		return pedidoAssembler.toModel(emissaoPedidoService.buscarOuFalhar(codigoPedido));
 	}
 
+	@CheckSecurity.Pedidos.PodeCriar
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public PedidoModel cadastrar(@RequestBody @Valid PedidoInput pedidoInput) {

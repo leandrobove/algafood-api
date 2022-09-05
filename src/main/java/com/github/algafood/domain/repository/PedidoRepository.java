@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.github.algafood.domain.model.Pedido;
 
 @Repository
-public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, JpaSpecificationExecutor<Pedido> {
+public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, JpaSpecificationExecutor<Pedido>, PedidoRepositoryQueries {
 
 	@Query("from Pedido p join fetch p.cliente join fetch p.restaurante r join fetch r.cozinha")
 	List<Pedido> findAll();
