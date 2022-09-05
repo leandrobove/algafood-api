@@ -63,6 +63,7 @@ public class PedidoController {
 	@Autowired
 	private AlgaSecurity algaSecurity;
 
+	@CheckSecurity.Pedidos.PodePesquisar
 	@GetMapping
 	public PagedModel<PedidoResumoModel> listarComFiltro(PedidoFilter pedidoFilter,
 			@PageableDefault(size = 10) Pageable pageable) {
