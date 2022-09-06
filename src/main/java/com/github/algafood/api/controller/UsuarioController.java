@@ -58,7 +58,6 @@ public class UsuarioController {
 		return usuarioModelAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 	}
 
-	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UsuarioModel cadastrar(@RequestBody @Valid UsuarioComSenhaInput usuarioComSenhaInput) {
