@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.AlgaLinksHelper;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.core.validation.Offset;
 import com.github.algafood.domain.filter.VendaDiariaFilter;
 import com.github.algafood.domain.model.dto.VendaDiaria;
@@ -37,6 +38,7 @@ public class EstatisticasController {
 	public static class EstatisticasModel extends RepresentationModel<EstatisticasModel> {
 	}
 
+	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping
 	public EstatisticasModel estatisticas() {
 		EstatisticasModel estatisticasModel = new EstatisticasModel();
@@ -46,12 +48,14 @@ public class EstatisticasController {
 		return estatisticasModel;
 	}
 
+	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiaria> listarPorVendasDiarias(VendaDiariaFilter filter,
 			@RequestParam(required = false, defaultValue = "+00:00") @Offset String timeOffset) {
 		return vendaQueryService.listarVendasDiarias(filter, timeOffset);
 	}
 
+	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<byte[]> listarPorVendasDiariasPdf(VendaDiariaFilter filter,
 			@RequestParam(required = false, defaultValue = "+00:00") @Offset String timeOffset) {
