@@ -27,6 +27,7 @@ import com.github.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.github.algafood.api.assembler.input.FormaPagamentoInputDisassembler;
 import com.github.algafood.api.dto.FormaPagamentoModel;
 import com.github.algafood.api.dto.input.FormaPagamentoInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.FormaPagamentoNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.FormaPagamento;
@@ -49,6 +50,7 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping
 	public ResponseEntity<CollectionModel<FormaPagamentoModel>> listar(ServletWebRequest request) {
 		//desabilita o shallow ETag
@@ -80,6 +82,7 @@ public class FormaPagamentoController {
 				.body(formasPagamentoDto);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping(value = "/{formaPagamentoId}")
 	public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 		//desabilita o shallow ETag
@@ -107,6 +110,7 @@ public class FormaPagamentoController {
 				.body(formaPagamentoDto);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public FormaPagamentoModel cadastrar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
@@ -119,12 +123,14 @@ public class FormaPagamentoController {
 		}
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@DeleteMapping(value = "/{formaPagamentoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long formaPagamentoId) {
 		cadastroFormaPagamento.deletar(formaPagamentoId);
 	}
 
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PutMapping(value = "/{formaPagamentoId}")
 	public FormaPagamentoModel atualizar(@PathVariable Long formaPagamentoId,
 			@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
