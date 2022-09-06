@@ -22,6 +22,7 @@ import com.github.algafood.api.assembler.CidadeModelAssembler;
 import com.github.algafood.api.assembler.input.CidadeInputDisassembler;
 import com.github.algafood.api.dto.CidadeModel;
 import com.github.algafood.api.dto.input.CidadeInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.github.algafood.domain.exception.NegocioException;
 import com.github.algafood.domain.model.Cidade;
@@ -50,6 +51,7 @@ public class CidadeController {
 	@Autowired
 	private CidadeInputDisassembler cidadeInputDisassembler;
 
+	@CheckSecurity.Cidades.PodeConsultar
 	@ApiOperation(value = "Lista as cidades")
 	@GetMapping
 	public CollectionModel<CidadeModel> listar() {
@@ -59,6 +61,7 @@ public class CidadeController {
 		return cidadeModelAssembler.toCollectionModel(cidades);
 	}
 
+	@CheckSecurity.Cidades.PodeConsultar
 	@ApiOperation(value = "Busca uma cidade por ID")
 	@GetMapping(value = "/{cidadeId}")
 	public CidadeModel buscar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
@@ -68,6 +71,7 @@ public class CidadeController {
 		return cidadeModelAssembler.toModel(cidade);
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@ApiOperation(value = "Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -87,6 +91,7 @@ public class CidadeController {
 		}
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@PutMapping(value = "/{cidadeId}")
 	public CidadeModel atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
@@ -103,6 +108,7 @@ public class CidadeController {
 		}
 	}
 
+	@CheckSecurity.Cidades.PodeEditar
 	@ApiOperation(value = "Exclui uma cidade por ID")
 	@DeleteMapping(value = "/{cidadeId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
