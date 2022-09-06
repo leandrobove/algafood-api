@@ -23,6 +23,7 @@ import com.github.algafood.api.dto.UsuarioModel;
 import com.github.algafood.api.dto.input.SenhaInput;
 import com.github.algafood.api.dto.input.UsuarioComSenhaInput;
 import com.github.algafood.api.dto.input.UsuarioSemSenhaInput;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.UsuarioRepository;
 import com.github.algafood.domain.service.CadastroUsuarioService;
@@ -43,6 +44,7 @@ public class UsuarioController {
 	@Autowired
 	UsuarioInputDisassembler usuarioInputDisassembler;
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioModel> listar() {
 		List<Usuario> usuarios = usuarioRepository.findAll();
@@ -50,11 +52,13 @@ public class UsuarioController {
 		return usuarioModelAssembler.toCollectionModel(usuarios);
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping(value = "/{usuarioId}")
 	public UsuarioModel buscarPorId(@PathVariable Long usuarioId) {
 		return usuarioModelAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UsuarioModel cadastrar(@RequestBody @Valid UsuarioComSenhaInput usuarioComSenhaInput) {
@@ -64,6 +68,7 @@ public class UsuarioController {
 		return usuarioModelAssembler.toModel(usuarioService.salvar(usuario));
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
 	@PutMapping(value = "/{usuarioId}")
 	public UsuarioModel atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioSemSenhaInput usuarioSemSenhaInput) {
 
@@ -74,12 +79,14 @@ public class UsuarioController {
 		return usuarioModelAssembler.toModel(usuarioService.salvar(usuarioAtual));
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long usuarioId) {
 		usuarioService.deletar(usuarioId);
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
 	@PutMapping(value = "/{usuarioId}/senha")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senhaInput) {

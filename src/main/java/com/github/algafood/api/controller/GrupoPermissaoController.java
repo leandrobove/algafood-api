@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.PermissaoModelAssembler;
 import com.github.algafood.api.dto.PermissaoModel;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Grupo;
 import com.github.algafood.domain.service.CadastroGrupoService;
 
@@ -31,6 +32,7 @@ public class GrupoPermissaoController {
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<PermissaoModel> listar(@PathVariable Long grupoId) {
 		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
@@ -47,6 +49,7 @@ public class GrupoPermissaoController {
 		return permissoesModel;
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping(value = "/{permissaoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
@@ -55,6 +58,7 @@ public class GrupoPermissaoController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping(value = "/{permissaoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {

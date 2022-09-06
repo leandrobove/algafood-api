@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.assembler.PermissaoModelAssembler;
 import com.github.algafood.api.dto.PermissaoModel;
+import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Permissao;
 import com.github.algafood.domain.repository.PermissaoRepository;
 
@@ -23,6 +24,7 @@ public class PermissaoController {
 	@Autowired
 	private PermissaoModelAssembler permissaoModelAssembler;
 
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<PermissaoModel> listar() {
 
