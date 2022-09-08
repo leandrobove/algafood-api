@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.GrupoModelAssembler;
 import com.github.algafood.api.dto.GrupoModel;
+import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.service.CadastroUsuarioService;
@@ -28,24 +29,30 @@ public class UsuarioGrupoController {
 
 	@Autowired
 	private GrupoModelAssembler grupoAssembler;
-	
+
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<GrupoModel> listar(@PathVariable Long usuarioId) {
-		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId); 
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
 
-		CollectionModel<GrupoModel> gruposModel = grupoAssembler.toCollectionModel(usuario.getGrupos())
-				.removeLinks()
-				.add(algaLinksHelper.linkToGruposUsuario(usuario.getId()))
-				.add(algaLinksHelper.linkToUsuarioGrupoAssociacao(usuario.getId(), "associar"));
-		
-		gruposModel.forEach((grupoModel) -> {
-			grupoModel.add(algaLinksHelper.linkToUsuarioGrupoDessociacao(usuarioId, grupoModel.getId(), "desassociar"));
-		});
-		
+		CollectionModel<GrupoModel> gruposModel = grupoAssembler.toCollectionModel(usuario.getGrupos()).removeLinks();
+		if (algaSecurity.podeEditarUsuariosGruposPermissoes()) {
+			//associar
+			gruposModel.add(algaLinksHelper.linkToUsuarioGrupoAssociacao(usuario.getId(), "associar"));
+			
+			//desassociar
+			gruposModel.forEach((grupoModel) -> {
+				grupoModel.add(
+						algaLinksHelper.linkToUsuarioGrupoDessociacao(usuarioId, grupoModel.getId(), "desassociar"));
+			});
+		}
+
 		return gruposModel;
 	}
 
@@ -54,7 +61,7 @@ public class UsuarioGrupoController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associarGrupo(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
 		usuarioService.associarGrupo(usuarioId, grupoId);
-		
+
 		return ResponseEntity.noContent().build();
 	}
 
@@ -63,7 +70,7 @@ public class UsuarioGrupoController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociarGrupo(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
 		usuarioService.desassociarGrupo(usuarioId, grupoId);
-		
+
 		return ResponseEntity.noContent().build();
 	}
 }

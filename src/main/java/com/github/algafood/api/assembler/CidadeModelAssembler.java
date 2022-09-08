@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.controller.CidadeController;
 import com.github.algafood.api.dto.CidadeModel;
+import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.domain.model.Cidade;
 
 @Component
@@ -19,6 +20,9 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
 
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	public CidadeModelAssembler() {
 		super(CidadeController.class, CidadeModel.class);
@@ -29,16 +33,25 @@ public class CidadeModelAssembler extends RepresentationModelAssemblerSupport<Ci
 		CidadeModel cidadeModel = modelMapper.map(model, CidadeModel.class);
 
 		// Hypermedia
-		cidadeModel.add(algaLinksHelper.linkToCidade(cidadeModel.getId()));
-		cidadeModel.add(algaLinksHelper.linkToCidades("cidades"));
+		if(algaSecurity.podeConsultarCidades()) {
+			cidadeModel.add(algaLinksHelper.linkToCidade(cidadeModel.getId()));
+		}
 
-		cidadeModel.getEstado().add(algaLinksHelper.linkToEstado(cidadeModel.getEstado().getId()));
+		if(algaSecurity.podeConsultarEstados()) {
+			cidadeModel.getEstado().add(algaLinksHelper.linkToEstado(cidadeModel.getEstado().getId()));
+		}
 
 		return cidadeModel;
 	}
 
 	@Override
 	public CollectionModel<CidadeModel> toCollectionModel(Iterable<? extends Cidade> entities) {
-		return super.toCollectionModel(entities).add(algaLinksHelper.linkToCidades());
+		CollectionModel<CidadeModel> cidadesModel = super.toCollectionModel(entities);
+		
+		if(algaSecurity.podeConsultarCidades()) {
+			cidadesModel.add(algaLinksHelper.linkToCidades());
+		}
+		
+		return cidadesModel;
 	}
 }

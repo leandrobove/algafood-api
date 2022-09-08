@@ -86,6 +86,10 @@ public class AlgaSecurity {
 		return this.temEscopoEscrita() && (this.hasAuthority("EDITAR_RESTAURANTES") || this.gerenciaRestaurante(restauranteId));
 	}
 	
+	public boolean podePesquisarPedidos() {
+	    return isAutenticado() && temEscopoLeitura();
+	}
+	
 	public boolean podePesquisarPedidos(Long clienteId, Long restauranteId) {	
 		return this.temEscopoLeitura() && (this.hasAuthority("CONSULTAR_PEDIDOS") || 
 				this.usuarioAutenticadoIgual(clienteId) || this.gerenciaRestaurante(restauranteId));

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.controller.EstadoController;
 import com.github.algafood.api.dto.EstadoModel;
+import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.domain.model.Estado;
 
 @Component
@@ -19,6 +20,9 @@ public class EstadoModelAssembler extends RepresentationModelAssemblerSupport<Es
 
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	public EstadoModelAssembler() {
 		super(EstadoController.class, EstadoModel.class);
@@ -26,17 +30,24 @@ public class EstadoModelAssembler extends RepresentationModelAssemblerSupport<Es
 
 	@Override
 	public EstadoModel toModel(Estado estado) {
-		EstadoModel estadoModel = modelMapper.map(estado, EstadoModel.class);
+		EstadoModel estadoModel = createModelWithId(estado.getId(), estado);
+	    modelMapper.map(estado, estadoModel);
 
-		estadoModel.add(algaLinksHelper.linkToEstado(estadoModel.getId()));
-		estadoModel.add(algaLinksHelper.linkToEstados("estados"));
-
+	    if(algaSecurity.podeConsultarEstados()) {
+	    	estadoModel.add(algaLinksHelper.linkToEstados("estados"));
+	    }
 		return estadoModel;
 	}
 
 	@Override
 	public CollectionModel<EstadoModel> toCollectionModel(Iterable<? extends Estado> entities) {
-		return super.toCollectionModel(entities).add(algaLinksHelper.linkToEstados());
+		CollectionModel<EstadoModel> estadosModel = super.toCollectionModel(entities);
+		
+		if(algaSecurity.podeConsultarEstados()) {
+			estadosModel.add(algaLinksHelper.linkToEstados());
+		}
+		
+		return estadosModel;
 	}
 
 }

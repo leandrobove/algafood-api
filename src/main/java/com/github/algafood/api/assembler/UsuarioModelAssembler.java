@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.controller.UsuarioController;
 import com.github.algafood.api.dto.UsuarioModel;
+import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.domain.model.Usuario;
 
 @Component
@@ -19,6 +20,9 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
 
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	public UsuarioModelAssembler() {
 		super(UsuarioController.class, UsuarioModel.class);
@@ -29,16 +33,24 @@ public class UsuarioModelAssembler extends RepresentationModelAssemblerSupport<U
 		UsuarioModel usuarioModel = modelMapper.map(usuario, UsuarioModel.class);
 
 		// hypermedia
-		usuarioModel.add(algaLinksHelper.linkToUsuario(usuarioModel.getId()));
-		usuarioModel.add(algaLinksHelper.linkToUsuarios("usuarios"));
-		usuarioModel.add(algaLinksHelper.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+		if(algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+			usuarioModel.add(algaLinksHelper.linkToUsuarios("usuarios"));
+			usuarioModel.add(algaLinksHelper.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
+		}
 
 		return usuarioModel;
 	}
 
 	@Override
 	public CollectionModel<UsuarioModel> toCollectionModel(Iterable<? extends Usuario> entities) {
-		return super.toCollectionModel(entities).add(algaLinksHelper.linkToUsuarios());
+		
+		CollectionModel<UsuarioModel> usuariosModel = super.toCollectionModel(entities);
+		
+		if(algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+			usuariosModel.add(algaLinksHelper.linkToUsuarios());
+		}
+		
+		return usuariosModel;
 	}
 
 }

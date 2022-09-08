@@ -8,29 +8,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.algafood.api.AlgaLinksHelper;
+import com.github.algafood.core.security.AlgaSecurity;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RootEntryPointController {
-	
+
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	@GetMapping
 	public RootEntryPointModel getRoot() {
 		RootEntryPointModel rootEntryPointModel = new RootEntryPointModel();
-		
-		rootEntryPointModel.add(algaLinksHelper.linkToCozinhas("cozinhas"));
-		rootEntryPointModel.add(algaLinksHelper.linkToPedidos("pedidos"));
-		rootEntryPointModel.add(algaLinksHelper.linkToRestaurantes("restaurantes"));
-		rootEntryPointModel.add(algaLinksHelper.linkToGrupos("grupos"));
-		rootEntryPointModel.add(algaLinksHelper.linkToUsuarios("usuarios"));
-		rootEntryPointModel.add(algaLinksHelper.linkToPermissoes("permissoes"));
-		rootEntryPointModel.add(algaLinksHelper.linkToFormasPagamento("formas-pagamento"));
-		rootEntryPointModel.add(algaLinksHelper.linkToEstados("estados"));
-		rootEntryPointModel.add(algaLinksHelper.linkToCidades("cidades"));
-		rootEntryPointModel.add(algaLinksHelper.linkToEstatisticas("estatisticas"));
-		
+
+		if (algaSecurity.podeConsultarCozinhas()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToCozinhas("cozinhas"));
+		}
+		if (algaSecurity.podePesquisarPedidos()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToPedidos("pedidos"));
+		}
+		if (algaSecurity.podeConsultarRestaurantes()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToRestaurantes("restaurantes"));
+		}
+		if (algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToGrupos("grupos"));
+			rootEntryPointModel.add(algaLinksHelper.linkToUsuarios("usuarios"));
+			rootEntryPointModel.add(algaLinksHelper.linkToPermissoes("permissoes"));
+		}
+		if (algaSecurity.podeConsultarFormasPagamento()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToFormasPagamento("formas-pagamento"));
+		}
+		if (algaSecurity.podeConsultarEstados()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToEstados("estados"));
+		}
+		if (algaSecurity.podeConsultarCidades()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToCidades("cidades"));
+		}
+		if (algaSecurity.podeConsultarEstatisticas()) {
+			rootEntryPointModel.add(algaLinksHelper.linkToEstatisticas("estatisticas"));
+		}
+
 		return rootEntryPointModel;
 	}
 

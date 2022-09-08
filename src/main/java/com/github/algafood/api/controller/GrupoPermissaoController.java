@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.PermissaoModelAssembler;
 import com.github.algafood.api.dto.PermissaoModel;
+import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Grupo;
 import com.github.algafood.domain.service.CadastroGrupoService;
@@ -31,6 +32,9 @@ public class GrupoPermissaoController {
 	
 	@Autowired
 	private AlgaLinksHelper algaLinksHelper;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
@@ -38,13 +42,19 @@ public class GrupoPermissaoController {
 		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
 
 		CollectionModel<PermissaoModel> permissoesModel = permissaoAssembler.toCollectionModel(grupo.getPermissoes())
-				.removeLinks()
-				.add(algaLinksHelper.linkToGrupoPermissoes(grupoId))
-				.add(algaLinksHelper.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+				.removeLinks();
 		
-		permissoesModel.getContent().forEach((permissaoModel) -> {
-			permissaoModel.add(algaLinksHelper.linkToGrupoPermissaoDesassociacao(grupoId, permissaoModel.getId(), "desassociar"));
-		});
+		permissoesModel.add(algaLinksHelper.linkToGrupoPermissoes(grupoId));
+		
+		if(algaSecurity.podeEditarUsuariosGruposPermissoes()) {
+			//associar
+			permissoesModel.add(algaLinksHelper.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+	
+			//desassociar
+			permissoesModel.getContent().forEach((permissaoModel) -> {
+				permissaoModel.add(algaLinksHelper.linkToGrupoPermissaoDesassociacao(grupoId, permissaoModel.getId(), "desassociar"));
+			});
+		}
 		
 		return permissoesModel;
 	}
