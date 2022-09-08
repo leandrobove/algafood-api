@@ -43,5 +43,15 @@ public class AlgaSecurity {
 	public boolean usuarioAutenticadoIgual(Long usuarioId) {
 		return this.getUsuarioId() != null && usuarioId != null && this.getUsuarioId().equals(usuarioId);
 	}
+	
+	public boolean podeGerenciarPedidos(String codigoPedido) {
+		return this.hasAuthority("SCOPE_WRITE") && 
+				(this.hasAuthority("GERENCIAR_PEDIDOS") || this.gerenciaRestauranteDoPedido(codigoPedido));
+	}
+	
+	public boolean hasAuthority(String authorityName) {
+		return this.getAuthentication().getAuthorities().stream()
+				.anyMatch(authority -> authority.getAuthority().equals(authorityName));
+	}
 
 }
