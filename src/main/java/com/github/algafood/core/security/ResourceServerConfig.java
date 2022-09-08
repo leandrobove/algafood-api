@@ -24,7 +24,9 @@ public class ResourceServerConfig {
 		
 	@Bean
 	public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-		http
+		http.authorizeRequests()
+			.antMatchers("/oauth2/**").authenticated()
+		.and()
 			.cors()
 		.and()
 			.csrf().disable()
