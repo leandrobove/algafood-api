@@ -1,6 +1,7 @@
 package com.github.algafood.oauth2;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,7 +20,7 @@ public class ChromeWebDriver {
 		ChromeOptions chromeOptions = new ChromeOptions();
 		
 		//add configurações
-		chromeOptions.addArguments("headless");
+		chromeOptions.addArguments(Arrays.asList("headless", "disable-gpu"));
 		
 		return chromeOptions;
 	}

@@ -14,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.github.algafood.core.security.authorizationserver.AlgafoodSecurityProperties;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 @SpringBootTest
 @TestPropertySource(value = "/application-test.properties")
@@ -49,6 +50,7 @@ public class AuthorizationCodeFlowTest {
 		given()
 			.header("Authorization", "Basic " + 
 					Base64.getEncoder().encodeToString((clientId + ":" + cliendPassword).getBytes()))
+			.contentType(ContentType.URLENC)
 			.formParam("grant_type", "authorization_code")
 			.formParam("code_verifier", authorizationCodePkceFlow.getCodeVerifier())
 			.formParam("redirect_uri", redirectUri)

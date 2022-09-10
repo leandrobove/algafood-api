@@ -66,6 +66,7 @@ public class CozinhaControllerTest {
 		Response response = given()
 			.header("Authorization", "Basic " + 
 					Base64.getEncoder().encodeToString((clientId + ":" + cliendPassword).getBytes()))
+			.contentType(ContentType.URLENC)
 			.formParam("grant_type", "authorization_code")
 			.formParam("code_verifier", authorizationCodePkceFlow.getCodeVerifier())
 			.formParam("redirect_uri", redirectUri)
@@ -103,7 +104,7 @@ public class CozinhaControllerTest {
 	public void deveRetornarStatus200_QuandoConsultarCozinhas() {
 		given()
 			.accept(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 		.when()
 			.get()
 		.then()
@@ -115,7 +116,7 @@ public class CozinhaControllerTest {
 
 		given()
 			.accept(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 		.when()
 			.get()
 		.then()
@@ -133,7 +134,7 @@ public class CozinhaControllerTest {
 			.body(cozinhaJson)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 		.when()
 			.post()
 		.then()
@@ -148,7 +149,7 @@ public class CozinhaControllerTest {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(cozinhaJson)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 		.when()
 			.post()
 		.then()
@@ -166,7 +167,7 @@ public class CozinhaControllerTest {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(cozinhaJson)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 		.when()
 			.post()
 		.then()
@@ -178,7 +179,7 @@ public class CozinhaControllerTest {
 
 		given()
 			.accept(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.pathParam("cozinhaId", 2)
 		.when()
 			.get("/{cozinhaId}")
@@ -191,7 +192,7 @@ public class CozinhaControllerTest {
 	public void deveRetornarStatus404_QuantoConsultarCozinhaInexistente() {
 
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
 		.when()
@@ -208,7 +209,7 @@ public class CozinhaControllerTest {
 				+ "}";
 		
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
 //			.pathParam("cozinhaId", 1)
@@ -230,7 +231,7 @@ public class CozinhaControllerTest {
 				+ "}";
 		
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
 			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
@@ -250,7 +251,7 @@ public class CozinhaControllerTest {
 				+ "}";
 		
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.contentType(ContentType.JSON)
 			.pathParam("cozinhaId", 1)
@@ -266,7 +267,7 @@ public class CozinhaControllerTest {
 	public void deveRetornarStatus200_QuandoDeletarCozinha() {
 		
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.pathParam("cozinhaId", 1)
 		.when()
@@ -279,7 +280,7 @@ public class CozinhaControllerTest {
 	public void deveRetornarStatus400_QuandoDeletarCozinhaInexistente() {
 		
 		given()
-			.header("Authorization", "Bearer " + accessToken)
+			.auth().oauth2(accessToken)
 			.accept(ContentType.JSON)
 			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
 		.when()
