@@ -1,5 +1,11 @@
 set foreign_key_checks = 0;
 
+lock tables cidade write, cozinha write, estado write, forma_pagamento write,
+	grupo write, grupo_permissao write, permissao write,
+	produto write, restaurante write, restaurante_forma_pagamento write,
+	restaurante_usuario_responsavel write, usuario write, usuario_grupo write,
+	pedido write, item_pedido write, foto_produto write, oauth2_registered_client write;
+
 delete from cidade;
 delete from cozinha;
 delete from estado;
@@ -136,3 +142,4 @@ values ('1','algafood-backend','2022-09-06 14:54:59','$2a$10$NfBs1HoeEgEGuhimqyy
 insert into oauth2_registered_client(id,client_id,client_id_issued_at,client_secret,client_secret_expires_at,client_name,client_authentication_methods,authorization_grant_types,redirect_uris,scopes,client_settings,token_settings) 
 values ('2','algafood-web','2022-09-06 14:54:59','$2a$10$DjMEnXUgZQE2bgEdB/BI2.vFxs1LDv5TRS7JoGlex1ky4XoHvEEiC',NULL,'2','client_secret_basic','refresh_token,authorization_code','http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html,http://127.0.0.1:8080/authorized','READ,WRITE','{\"@class\":\"java.util.Collections$UnmodifiableMap\",\"settings.client.require-proof-key\":false,\"settings.client.require-authorization-consent\":true}','{\"@class\":\"java.util.Collections$UnmodifiableMap\",\"settings.token.reuse-refresh-tokens\":false,\"settings.token.id-token-signature-algorithm\":[\"org.springframework.security.oauth2.jose.jws.SignatureAlgorithm\",\"RS256\"],\"settings.token.access-token-time-to-live\":[\"java.time.Duration\",900.000000000],\"settings.token.access-token-format\":{\"@class\":\"org.springframework.security.oauth2.core.OAuth2TokenFormat\",\"value\":\"self-contained\"},\"settings.token.refresh-token-time-to-live\":[\"java.time.Duration\",86400.000000000]}');
 
+unlock tables;

@@ -13,10 +13,7 @@ services:
 
   algafood-api:
     build: .
-    container_name: algafood-api
     command: ["/wait-for-it.sh", "algafood-db:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
-    ports:
-      - "8080:8080"
     environment:
       - DB_HOST=algafood-db
     depends_on:
