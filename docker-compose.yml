@@ -20,6 +20,16 @@ services:
       - algafood-db
     networks:
       - algafood-network
+      
+  algafood-proxy:
+    build: ./nginx
+    container_name: algafood-proxy
+    ports:
+      - "80:80"
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-api
     
 networks:
   algafood-network:
