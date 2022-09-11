@@ -8,20 +8,19 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
-    restart: always
     networks:
       - algafood-network
 
   algafood-api:
     build: .
     container_name: algafood-api
+    command: ["/wait-for-it.sh", "algafood-db:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
     ports:
       - "8080:8080"
     environment:
       - DB_HOST=algafood-db
     depends_on:
       - algafood-db
-    restart: always
     networks:
       - algafood-network
     
