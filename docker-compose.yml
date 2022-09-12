@@ -10,12 +10,20 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
     networks:
       - algafood-network
+      
+  algafood-redis:
+    image: redis:7.0-alpine
+    container_name: algafood-redis
+    networks:
+      - algafood-network
 
   algafood-api:
     build: .
     command: ["/wait-for-it.sh", "algafood-db:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
     environment:
       - DB_HOST=algafood-db
+      - SPRING_SESSION_STORE_TYPE=redis
+      - SPRING_REDIS_HOST=algafood-redis
     depends_on:
       - algafood-db
     networks:
