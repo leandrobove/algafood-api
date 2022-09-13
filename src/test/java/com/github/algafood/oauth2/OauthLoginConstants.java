@@ -4,9 +4,9 @@ import org.openqa.selenium.By;
 
 public class OauthLoginConstants {
 	
-	public static final By CAMPO_EMAIL = By.xpath("//*[@id=\"username\"]");
-	public static final By CAMPO_SENHA = By.xpath("//*[@id=\"password\"]");
-	public static final By BTN_LOGIN = By.xpath("/html/body/div/form/button");
+	public static final By CAMPO_EMAIL = By.xpath("//input[@name=\"username\"]");
+	public static final By CAMPO_SENHA = By.xpath("//input[@name=\"password\"]");
+	public static final By BTN_LOGIN = By.xpath("/html/body/form/button");
 	public static By getCampoScopo(String scope) {
 		return By.xpath(String.format("//*[@id=\"%s\"]", scope));
 	}
