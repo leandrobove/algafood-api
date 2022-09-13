@@ -121,10 +121,17 @@ public class AuthorizationServerConfig {
 		};
 	}
 	
+	// Persiste as authorities do cliente na tabela oauth2_authorization_consent
 	@Bean
 	public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations, 
 			RegisteredClientRepository registeredClientRepository) {
 		return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
+	}
+	
+	// Cria um serviço para realizar consultas de clientes
+	@Bean
+	public OAuth2AuthorizationQueryService auth2AuthorizationQueryService(JdbcOperations jdbcOperations) {
+		return new JdbcOAuth2AuthorizationQueryService(jdbcOperations);
 	}
 
 }
