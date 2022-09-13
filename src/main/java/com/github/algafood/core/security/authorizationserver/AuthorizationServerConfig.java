@@ -71,17 +71,20 @@ public class AuthorizationServerConfig {
 				.build();
 	}
 	
+	//Persiste os clients na tabela oauth2_registered_client
 	@Bean
 	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder, JdbcOperations jdbcOperations) {		
 		return new JdbcRegisteredClientRepository(jdbcOperations);
 	}
 	
+	//Persiste os clients, autorizações e tokens na tabela oauth2-authorization
 	@Bean
 	public OAuth2AuthorizationService auth2AuthorizationService(JdbcOperations jdbcOperations, 
 			RegisteredClientRepository registeredClientRepository) {
 		return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
 	}
 	
+	//Define a chave JKS para assinatura do JWT
 	@Bean
 	public JWKSource<SecurityContext> jwkSource(JwtKeyStoreProperties jwtKeyStoreProperties) throws Exception {
 		char[] keyStorePass = jwtKeyStoreProperties.getPassword().toCharArray();
@@ -99,6 +102,7 @@ public class AuthorizationServerConfig {
 		return new ImmutableJWKSet<>(new JWKSet(rsaKey));
 	}
 	
+	//Customiza o token JWT com claims personalizadas
 	@Bean
 	public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(UsuarioRepository usuarioRepository) {
 		return context -> {
@@ -128,10 +132,11 @@ public class AuthorizationServerConfig {
 		return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
 	}
 	
-	// Cria um serviço para realizar consultas de clientes
+	// Cria um serviço para realizar consultas de clientes autorizados
 	@Bean
-	public OAuth2AuthorizationQueryService auth2AuthorizationQueryService(JdbcOperations jdbcOperations) {
-		return new JdbcOAuth2AuthorizationQueryService(jdbcOperations);
+	public OAuth2AuthorizationQueryService auth2AuthorizationQueryService(JdbcOperations jdbcOperations, 
+			RegisteredClientRepository registeredClientRepository) {
+		return new JdbcOAuth2AuthorizationQueryService(jdbcOperations, registeredClientRepository);
 	}
 
 }
