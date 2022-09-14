@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +24,15 @@ import com.github.algafood.api.assembler.CozinhaModelAssembler;
 import com.github.algafood.api.assembler.input.CozinhaInputDisassembler;
 import com.github.algafood.api.dto.CozinhaModel;
 import com.github.algafood.api.dto.input.CozinhaInput;
+import com.github.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Cozinha;
 import com.github.algafood.domain.repository.CozinhaRepository;
 import com.github.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
-@RequestMapping(value = "/cozinhas")
-public class CozinhaController {
+@RequestMapping(value = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaController implements CozinhaControllerOpenApi {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
