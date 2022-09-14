@@ -49,7 +49,10 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.DELETE, this.globalDeleteResponseMessages())
 				.additionalModels(typeResolver.resolve(Problem.class))
 				.apiInfo(this.adicionarInformacoesDaApi())
-				.tags(new Tag("Cidades", "Gerencia as cidades"));
+				.tags(
+						new Tag("Cidades", "Gerencia as cidades"),
+						new Tag("Grupos", "Gerencia os grupos")
+				);
 	}
 
 	public ApiInfo adicionarInformacoesDaApi() {
