@@ -1,4 +1,4 @@
-package com.github.algafood.api.controller.openapi;
+package com.github.algafood.api.openapi.controller;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
