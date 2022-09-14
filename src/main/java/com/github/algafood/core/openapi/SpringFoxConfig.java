@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.algafood.api.exceptionhandler.Problem;
+import com.github.algafood.api.openapi.model.LinksModelOpenApi;
 import com.github.algafood.api.openapi.model.PageableModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
@@ -51,6 +53,7 @@ public class SpringFoxConfig {
 				.globalResponses(HttpMethod.DELETE, this.globalDeleteResponseMessages())
 				.additionalModels(typeResolver.resolve(Problem.class))
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
 				.apiInfo(this.adicionarInformacoesDaApi())
 				.tags(
 						new Tag("Cidades", "Gerencia as cidades"),
