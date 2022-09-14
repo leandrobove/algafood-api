@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import com.github.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.github.algafood.api.assembler.input.FormaPagamentoInputDisassembler;
 import com.github.algafood.api.dto.FormaPagamentoModel;
 import com.github.algafood.api.dto.input.FormaPagamentoInput;
+import com.github.algafood.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.FormaPagamentoNaoEncontradaException;
 import com.github.algafood.domain.exception.NegocioException;
@@ -35,8 +37,8 @@ import com.github.algafood.domain.repository.FormaPagamentoRepository;
 import com.github.algafood.domain.service.CadastroFormaPagamentoService;
 
 @RestController
-@RequestMapping(value = "/formas-pagamento")
-public class FormaPagamentoController {
+@RequestMapping(value = "/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
 	@Autowired
 	private CadastroFormaPagamentoService cadastroFormaPagamento;
