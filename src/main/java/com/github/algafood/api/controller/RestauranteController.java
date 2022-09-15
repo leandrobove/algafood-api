@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import com.github.algafood.api.dto.RestauranteApenasNomeModel;
 import com.github.algafood.api.dto.RestauranteBasicoModel;
 import com.github.algafood.api.dto.RestauranteModel;
 import com.github.algafood.api.dto.input.RestauranteInput;
+import com.github.algafood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.github.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -36,8 +38,8 @@ import com.github.algafood.domain.repository.RestauranteRepository;
 import com.github.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping(value = "/restaurantes")
-public class RestauranteController {
+@RequestMapping(value = "/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteController implements RestauranteControllerOpenApi {
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
@@ -64,9 +66,9 @@ public class RestauranteController {
 	}
 
 	@CheckSecurity.Restaurantes.PodeConsultar
-	@GetMapping(value = "/{id}")
-	public RestauranteModel buscar(@PathVariable Long id) {
-		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(id);
+	@GetMapping(value = "/{restauranteId}")
+	public RestauranteModel buscar(@PathVariable Long restauranteId) {
+		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
 		return restauranteAssembler.toModel(restaurante);
 	}
@@ -91,10 +93,10 @@ public class RestauranteController {
 	}
 
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@PutMapping(value = "/{id}")
-	public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteDTOInput) {
+	@PutMapping(value = "/{restauranteId}")
+	public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteDTOInput) {
 
-		var restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
+		var restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
 		restauranteInputDisassembler.copyToDomainObject(restauranteDTOInput, restauranteAtual);
 
@@ -106,25 +108,25 @@ public class RestauranteController {
 	}
 
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = "/{restauranteId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public void deletar(@PathVariable Long id) {
-		cadastroRestaurante.deletar(id);
+	public void deletar(@PathVariable Long restauranteId) {
+		cadastroRestaurante.deletar(restauranteId);
 	}
 
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@PutMapping(value = "/{id}/ativo")
+	@PutMapping(value = "/{restauranteId}/ativo")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> ativar(@PathVariable(name = "id") Long restauranteId) {
+	public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.ativar(restauranteId);
 		
 		return ResponseEntity.noContent().build();
 	}
 
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@DeleteMapping(value = "/{id}/inativo")
+	@DeleteMapping(value = "/{restauranteId}/inativo")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> inativar(@PathVariable(name = "id") Long restauranteId) {
+	public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.inativar(restauranteId);
 		
 		return ResponseEntity.noContent().build();
