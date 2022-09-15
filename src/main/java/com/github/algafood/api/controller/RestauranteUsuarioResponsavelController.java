@@ -3,6 +3,7 @@ package com.github.algafood.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.UsuarioModelAssembler;
 import com.github.algafood.api.dto.UsuarioModel;
+import com.github.algafood.api.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
 import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Restaurante;
 import com.github.algafood.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping(value = "/restaurantes/{restauranteId}/responsaveis")
-public class RestauranteUsuarioResponsavelController {
+@RequestMapping(value = "/restaurantes/{restauranteId}/responsaveis", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteUsuarioResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
 
 	@Autowired
 	private CadastroRestauranteService restauranteService;
