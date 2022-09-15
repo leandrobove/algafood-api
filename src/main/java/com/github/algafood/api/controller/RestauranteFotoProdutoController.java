@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.algafood.api.assembler.FotoProdutoModelAssembler;
 import com.github.algafood.api.dto.FotoProdutoModel;
 import com.github.algafood.api.dto.input.FotoProdutoInput;
+import com.github.algafood.api.openapi.controller.RestauranteFotoProdutoControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.github.algafood.domain.model.FotoProduto;
@@ -34,8 +35,8 @@ import com.github.algafood.domain.service.CatalogoFotoProdutoService;
 import com.github.algafood.infrastructure.service.storage.DiscoLocalFotoStorageService;
 
 @RestController
-@RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteFotoProdutoController {
+@RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteFotoProdutoController implements RestauranteFotoProdutoControllerOpenApi {
 
 	@Autowired
 	private CatalogoFotoProdutoService catalogoFotoProdutoService;
@@ -49,6 +50,7 @@ public class RestauranteFotoProdutoController {
 	@Autowired
 	private DiscoLocalFotoStorageService discoLocalFotoStorageService;
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoModel atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
@@ -71,8 +73,9 @@ public class RestauranteFotoProdutoController {
 		return fotoProdutoAssembler.toModel(fotoProdutoSalva);
 	}
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeConsultar
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping
 	public FotoProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
@@ -80,8 +83,9 @@ public class RestauranteFotoProdutoController {
 		return fotoProdutoAssembler.toModel(fotoProduto);
 	}
 
-	@GetMapping
-	public ResponseEntity<InputStreamResource> baixarFoto(@PathVariable Long restauranteId,
+	@Override
+	@GetMapping(produces = MediaType.ALL_VALUE)
+	public ResponseEntity<?> baixarFoto(@PathVariable Long restauranteId,
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
 			throws HttpMediaTypeNotAcceptableException {
 
@@ -101,6 +105,7 @@ public class RestauranteFotoProdutoController {
 		}
 	}
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
