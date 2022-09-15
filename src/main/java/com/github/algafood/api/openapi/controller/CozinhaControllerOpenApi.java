@@ -31,10 +31,10 @@ public interface CozinhaControllerOpenApi {
 		content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 		schema = @Schema(implementation = Problem.class)))
 	})
-	CozinhaModel buscar(@ApiParam(value = "ID de uma cozinha", example = "1") Long cozinhaId);
+	CozinhaModel buscar(@ApiParam(value = "ID de uma cozinha", example = "1", required = true) Long cozinhaId);
 
 	@ApiOperation(value = "Cadastra uma cozinha")
-	CozinhaModel cadastrar(CozinhaInput cozinhaInput);
+	CozinhaModel cadastrar(@ApiParam(name = "corpo", value = "Representação de uma nova cozinha", required = true) CozinhaInput cozinhaInput);
 
 	@ApiOperation(value = "Atualiza uma cozinha por ID")
 	@ApiResponses({
@@ -42,7 +42,8 @@ public interface CozinhaControllerOpenApi {
 		content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 		schema = @Schema(implementation = Problem.class)))
 	})
-	CozinhaModel atualizar(@ApiParam(value = "ID de uma cozinha", example = "1") Long cozinhaId, CozinhaInput cozinhaInput);
+	CozinhaModel atualizar(@ApiParam(value = "ID de uma cozinha", example = "1", required = true) Long cozinhaId, 
+			@ApiParam(name = "corpo", value = "Representação de uma cozinha com os novos dados", required = true) CozinhaInput cozinhaInput);
 
 	@ApiOperation(value = "Exclui uma cozinha por ID")
 	@ApiResponses({
@@ -50,6 +51,6 @@ public interface CozinhaControllerOpenApi {
 		content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 		schema = @Schema(implementation = Problem.class)))
 	})
-	void deletar(@ApiParam(value = "ID de uma cozinha", example = "1") Long cozinhaId);
+	void deletar(@ApiParam(value = "ID de uma cozinha", example = "1", required = true) Long cozinhaId);
 
 }

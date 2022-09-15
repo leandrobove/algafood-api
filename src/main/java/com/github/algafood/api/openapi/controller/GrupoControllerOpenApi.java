@@ -30,10 +30,10 @@ public interface GrupoControllerOpenApi {
 		content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 		schema = @Schema(implementation = Problem.class)))
 	})
-	GrupoModel buscarPorId(@ApiParam(value = "ID de um grupo", example = "1") Long grupoId);
+	GrupoModel buscarPorId(@ApiParam(value = "ID de um grupo", example = "1", required = true) Long grupoId);
 	
 	@ApiOperation(value = "Cadastra um grupo")
-	GrupoModel cadastrar(GrupoInput grupoInput);
+	GrupoModel cadastrar(@ApiParam(name = "corpo", value = "Representação de um novo grupo", required = true) GrupoInput grupoInput);
 	
 	@ApiOperation(value = "Atualiza um grupo por ID")
 	@ApiResponses({
@@ -41,7 +41,9 @@ public interface GrupoControllerOpenApi {
 				content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 				schema = @Schema(implementation = Problem.class)))
 	})
-	GrupoModel atualizar(@ApiParam(value = "ID de um grupo", example = "1") Long grupoId, GrupoInput grupoInput);
+	GrupoModel atualizar(@ApiParam(value = "ID de um grupo", example = "1", required = true) Long grupoId,
+			@ApiParam(name = "corpo", value = "Representação de um grupo com os novos dados", 
+			required = true) GrupoInput grupoInput);
 	
 	@ApiOperation(value = "Exclui um grupo por ID")
 	@ApiResponses({
@@ -49,6 +51,6 @@ public interface GrupoControllerOpenApi {
 				content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 				schema = @Schema(implementation = Problem.class)))
 	})
-	void deletar(@ApiParam(value = "ID de um grupo", example = "1") Long grupoId);
+	void deletar(@ApiParam(value = "ID de um grupo", example = "1", required = true) Long grupoId);
 	
 }

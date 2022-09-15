@@ -30,10 +30,10 @@ public interface CidadeControllerOpenApi {
 			content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 			schema = @Schema(implementation = Problem.class))) 
 	})
-	CidadeModel buscar(@ApiParam(value = "ID de uma cidade") Long cidadeId);
+	CidadeModel buscar(@ApiParam(value = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 	@ApiOperation(value = "Cadastra uma cidade")
-	CidadeModel cadastrar(CidadeInput cidadeDTOInput);
+	CidadeModel cadastrar(@ApiParam(name = "corpo", value = "Representação de uma nova cidade", required = true) CidadeInput cidadeDTOInput);
 
 	@ApiOperation(value = "Atualiza uma cidade por ID")
 	@ApiResponses(value = {
@@ -41,7 +41,8 @@ public interface CidadeControllerOpenApi {
 					content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 					schema = @Schema(implementation = Problem.class))) 
 	})
-	CidadeModel atualizar(@ApiParam(value = "ID de uma cidade") Long cidadeId, CidadeInput cidadeDTOInput);
+	CidadeModel atualizar(@ApiParam(value = "ID de uma cidade", example = "1", required = true) Long cidadeId, 
+			@ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados", required = true) CidadeInput cidadeDTOInput);
 
 	@ApiOperation(value = "Exclui uma cidade por ID")
 	@ApiResponses(value = {
@@ -49,6 +50,6 @@ public interface CidadeControllerOpenApi {
 					content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, 
 					schema = @Schema(implementation = Problem.class))) 
 	})
-	void deletar(@ApiParam(value = "ID de uma cidade") Long cidadeId);
+	void deletar(@ApiParam(value = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 }
