@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import com.github.algafood.api.assembler.input.PedidoInputDisassembler;
 import com.github.algafood.api.dto.PedidoModel;
 import com.github.algafood.api.dto.PedidoResumoModel;
 import com.github.algafood.api.dto.input.PedidoInput;
+import com.github.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.github.algafood.core.data.PageWrapper;
 import com.github.algafood.core.data.PageableTranslator;
 import com.github.algafood.core.security.AlgaSecurity;
@@ -39,8 +41,8 @@ import com.github.algafood.domain.service.EmissaoPedidoService;
 import com.github.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @RestController
-@RequestMapping(value = "/pedidos")
-public class PedidoController {
+@RequestMapping(value = "/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class PedidoController implements PedidoControllerOpenApi {
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
