@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,14 +24,15 @@ import com.github.algafood.api.dto.UsuarioModel;
 import com.github.algafood.api.dto.input.SenhaInput;
 import com.github.algafood.api.dto.input.UsuarioComSenhaInput;
 import com.github.algafood.api.dto.input.UsuarioSemSenhaInput;
+import com.github.algafood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.repository.UsuarioRepository;
 import com.github.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping(value = "/usuarios")
-public class UsuarioController {
+@RequestMapping(value = "/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -44,6 +46,7 @@ public class UsuarioController {
 	@Autowired
 	UsuarioInputDisassembler usuarioInputDisassembler;
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioModel> listar() {
@@ -52,12 +55,14 @@ public class UsuarioController {
 		return usuarioModelAssembler.toCollectionModel(usuarios);
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping(value = "/{usuarioId}")
 	public UsuarioModel buscarPorId(@PathVariable Long usuarioId) {
 		return usuarioModelAssembler.toModel(usuarioService.buscarOuFalhar(usuarioId));
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UsuarioModel cadastrar(@RequestBody @Valid UsuarioComSenhaInput usuarioComSenhaInput) {
@@ -67,6 +72,7 @@ public class UsuarioController {
 		return usuarioModelAssembler.toModel(usuarioService.salvar(usuario));
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
 	@PutMapping(value = "/{usuarioId}")
 	public UsuarioModel atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioSemSenhaInput usuarioSemSenhaInput) {
@@ -78,6 +84,7 @@ public class UsuarioController {
 		return usuarioModelAssembler.toModel(usuarioService.salvar(usuarioAtual));
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping(value = "/{usuarioId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -85,6 +92,7 @@ public class UsuarioController {
 		usuarioService.deletar(usuarioId);
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
 	@PutMapping(value = "/{usuarioId}/senha")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
