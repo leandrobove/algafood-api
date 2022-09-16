@@ -3,6 +3,7 @@ package com.github.algafood.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.GrupoModelAssembler;
 import com.github.algafood.api.dto.GrupoModel;
+import com.github.algafood.api.openapi.controller.UsuarioGrupoControllerOpenApi;
 import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Usuario;
 import com.github.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping(value = "/usuarios/{usuarioId}/grupos")
-public class UsuarioGrupoController {
+@RequestMapping(value = "/usuarios/{usuarioId}/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
 	@Autowired
 	private CadastroUsuarioService usuarioService;
@@ -36,6 +38,7 @@ public class UsuarioGrupoController {
 	@Autowired
 	private AlgaSecurity algaSecurity;
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<GrupoModel> listar(@PathVariable Long usuarioId) {
@@ -56,6 +59,7 @@ public class UsuarioGrupoController {
 		return gruposModel;
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping(value = "/{grupoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -65,6 +69,7 @@ public class UsuarioGrupoController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping(value = "/{grupoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
