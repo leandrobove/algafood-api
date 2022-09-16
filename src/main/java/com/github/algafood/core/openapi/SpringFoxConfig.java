@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.algafood.api.dto.CidadeModel;
 import com.github.algafood.api.exceptionhandler.Problem;
+import com.github.algafood.api.openapi.model.CidadesModelOpenApi;
 import com.github.algafood.api.openapi.model.LinksModelOpenApi;
 import com.github.algafood.api.openapi.model.PageableModelOpenApi;
 
@@ -32,6 +35,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
+import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Response;
@@ -63,6 +67,9 @@ public class SpringFoxConfig {
 				.additionalModels(typeResolver.resolve(Problem.class))
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, CidadeModel.class),
+						CidadesModelOpenApi.class))
 				.apiInfo(this.adicionarInformacoesDaApi())
 				.tags(
 						new Tag("Cidades", "Gerencia as cidades"),
