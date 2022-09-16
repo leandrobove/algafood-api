@@ -3,7 +3,6 @@ package com.github.algafood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.algafood.api.AlgaLinksHelper;
+import com.github.algafood.api.openapi.controller.EstatisticasControllerOpenApi;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.core.validation.Offset;
 import com.github.algafood.domain.filter.VendaDiariaFilter;
@@ -24,7 +23,7 @@ import com.github.algafood.domain.service.VendaReportService;
 @RestController
 @RequestMapping(value = "/estatisticas")
 @Validated
-public class EstatisticasController {
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	@Autowired
 	private VendaQueryService vendaQueryService;
@@ -32,22 +31,7 @@ public class EstatisticasController {
 	@Autowired
 	private VendaReportService vendaReportService;
 
-	@Autowired
-	private AlgaLinksHelper algaLinksHelper;
-
-	public static class EstatisticasModel extends RepresentationModel<EstatisticasModel> {
-	}
-
-	@CheckSecurity.Estatisticas.PodeConsultar
-	@GetMapping
-	public EstatisticasModel estatisticas() {
-		EstatisticasModel estatisticasModel = new EstatisticasModel();
-
-		estatisticasModel.add(algaLinksHelper.linkToEstatisticasVendasDiarias("vendas-diarias"));
-
-		return estatisticasModel;
-	}
-
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiaria> listarPorVendasDiarias(VendaDiariaFilter filter,
@@ -55,6 +39,7 @@ public class EstatisticasController {
 		return vendaQueryService.listarVendasDiarias(filter, timeOffset);
 	}
 
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<byte[]> listarPorVendasDiariasPdf(VendaDiariaFilter filter,
