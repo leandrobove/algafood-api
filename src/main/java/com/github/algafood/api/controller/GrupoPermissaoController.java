@@ -3,6 +3,7 @@ package com.github.algafood.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.algafood.api.AlgaLinksHelper;
 import com.github.algafood.api.assembler.PermissaoModelAssembler;
 import com.github.algafood.api.dto.PermissaoModel;
+import com.github.algafood.api.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.github.algafood.core.security.AlgaSecurity;
 import com.github.algafood.core.security.CheckSecurity;
 import com.github.algafood.domain.model.Grupo;
 import com.github.algafood.domain.service.CadastroGrupoService;
 
 @RestController
-@RequestMapping(value = "/grupos/{grupoId}/permissoes")
-public class GrupoPermissaoController {
+@RequestMapping(value = "/grupos/{grupoId}/permissoes", produces = MediaType.APPLICATION_JSON_VALUE)
+public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
 	@Autowired
 	private CadastroGrupoService grupoService;
@@ -36,6 +38,7 @@ public class GrupoPermissaoController {
 	@Autowired
 	private AlgaSecurity algaSecurity;
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<PermissaoModel> listar(@PathVariable Long grupoId) {
@@ -59,6 +62,7 @@ public class GrupoPermissaoController {
 		return permissoesModel;
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping(value = "/{permissaoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -68,6 +72,7 @@ public class GrupoPermissaoController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping(value = "/{permissaoId}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)

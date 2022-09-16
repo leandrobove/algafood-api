@@ -2,7 +2,6 @@ package com.github.algafood.api.openapi.controller;
 
 import java.io.IOException;
 
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
