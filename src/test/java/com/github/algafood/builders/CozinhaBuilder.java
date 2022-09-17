@@ -19,14 +19,10 @@ public class CozinhaBuilder {
 		return builder;
 	}
 	
-	public static CozinhaBuilder umaCozinhaComIdNulo() {
-		CozinhaBuilder builder = new CozinhaBuilder();
-		builder.cozinha = new Cozinha();
+	public CozinhaBuilder comIdNulo() {
+		this.cozinha.setId(null);
 		
-		builder.cozinha.setId(null);
-		builder.cozinha.setNome("Japonesa");
-
-		return builder;
+		return this;
 	}
 
 	public Cozinha build() {

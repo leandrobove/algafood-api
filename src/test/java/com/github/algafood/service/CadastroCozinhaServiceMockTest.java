@@ -32,7 +32,7 @@ public class CadastroCozinhaServiceMockTest {
 	@Test
 	public void cadastrarCozinha() {
 		// given
-		Cozinha cozinha = umaCozinhaComIdNulo().build();
+		Cozinha cozinha = umaCozinha().comIdNulo().build();
 
 		// when
 		Cozinha cozinhaRetorno = umaCozinha().build();
