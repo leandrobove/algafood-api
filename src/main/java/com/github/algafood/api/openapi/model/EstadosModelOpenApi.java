@@ -15,13 +15,13 @@ import lombok.Setter;
 @Setter
 public class EstadosModelOpenApi {
 
-	private EstadosEmbeddedModel _embedded;
+	private EstadosEmbeddedModelOpenApi _embedded;
 	private Links _links;
 	
 	@ApiModel("EstadosEmbeddedModel")
 	@Getter
 	@Setter
-	public class EstadosEmbeddedModel {
+	public class EstadosEmbeddedModelOpenApi {
 		
 		private List<EstadoModel> estados;
 		

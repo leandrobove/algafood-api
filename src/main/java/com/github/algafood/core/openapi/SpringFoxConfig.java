@@ -27,10 +27,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.algafood.api.dto.CidadeModel;
 import com.github.algafood.api.dto.CozinhaModel;
 import com.github.algafood.api.dto.EstadoModel;
+import com.github.algafood.api.dto.FormaPagamentoModel;
 import com.github.algafood.api.exceptionhandler.Problem;
 import com.github.algafood.api.openapi.model.CidadesModelOpenApi;
 import com.github.algafood.api.openapi.model.CozinhasModelOpenApi;
 import com.github.algafood.api.openapi.model.EstadosModelOpenApi;
+import com.github.algafood.api.openapi.model.FormasPagamentoModelOpenApi;
 import com.github.algafood.api.openapi.model.LinksModelOpenApi;
 import com.github.algafood.api.openapi.model.PageableModelOpenApi;
 
@@ -80,6 +82,10 @@ public class SpringFoxConfig {
 						AlternateTypeRules.newRule(
 								typeResolver.resolve(CollectionModel.class, EstadoModel.class),
 								EstadosModelOpenApi.class
+						),
+						AlternateTypeRules.newRule(
+								typeResolver.resolve(CollectionModel.class, FormaPagamentoModel.class),
+								FormasPagamentoModelOpenApi.class
 						)
 				)
 				.alternateTypeRules(AlternateTypeRules.newRule(
