@@ -15,13 +15,13 @@ import lombok.Setter;
 @Getter
 public class CidadesModelOpenApi {
 	
-	private CidadeEmbeddedModelOpenApi _embedded;
+	private CidadesEmbeddedModelOpenApi _embedded;
 	private Links _links;
 	
 	@ApiModel("CidadesEmbeddedModel")
 	@Setter
 	@Getter
-	public class CidadeEmbeddedModelOpenApi {
+	public class CidadesEmbeddedModelOpenApi {
 		
 		private List<CidadeModel> cidades;
 		
