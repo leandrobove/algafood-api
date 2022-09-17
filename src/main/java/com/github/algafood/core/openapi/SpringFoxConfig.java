@@ -28,13 +28,17 @@ import com.github.algafood.api.dto.CidadeModel;
 import com.github.algafood.api.dto.CozinhaModel;
 import com.github.algafood.api.dto.EstadoModel;
 import com.github.algafood.api.dto.FormaPagamentoModel;
+import com.github.algafood.api.dto.GrupoModel;
+import com.github.algafood.api.dto.PermissaoModel;
 import com.github.algafood.api.exceptionhandler.Problem;
 import com.github.algafood.api.openapi.model.CidadesModelOpenApi;
 import com.github.algafood.api.openapi.model.CozinhasModelOpenApi;
 import com.github.algafood.api.openapi.model.EstadosModelOpenApi;
 import com.github.algafood.api.openapi.model.FormasPagamentoModelOpenApi;
+import com.github.algafood.api.openapi.model.GruposModelOpenApi;
 import com.github.algafood.api.openapi.model.LinksModelOpenApi;
 import com.github.algafood.api.openapi.model.PageableModelOpenApi;
+import com.github.algafood.api.openapi.model.PermissoesModelOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -86,6 +90,14 @@ public class SpringFoxConfig {
 						AlternateTypeRules.newRule(
 								typeResolver.resolve(CollectionModel.class, FormaPagamentoModel.class),
 								FormasPagamentoModelOpenApi.class
+						),
+						AlternateTypeRules.newRule(
+								typeResolver.resolve(CollectionModel.class, GrupoModel.class),
+								GruposModelOpenApi.class
+						),
+						AlternateTypeRules.newRule(
+								typeResolver.resolve(CollectionModel.class, PermissaoModel.class),
+								PermissoesModelOpenApi.class
 						)
 				)
 				.alternateTypeRules(AlternateTypeRules.newRule(
