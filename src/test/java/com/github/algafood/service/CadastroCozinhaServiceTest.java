@@ -27,6 +27,8 @@ import com.github.algafood.util.DatabaseCleaner;
 class CadastroCozinhaServiceTest {
 
 	private static final Long ID_COZINHA_INEXISTENTE = 100L;
+	
+	private static Long ID_COZINHA_EXISTENTE;
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinhaService;
@@ -51,7 +53,9 @@ class CadastroCozinhaServiceTest {
 		Cozinha cozinha2 = new Cozinha(null, "Indiana", null);
 		
 		cozinhaRepository.save(cozinha1);
-		cozinhaRepository.save(cozinha2);
+		Cozinha cozinha2Salva = cozinhaRepository.save(cozinha2);
+		
+		ID_COZINHA_EXISTENTE = cozinha2Salva.getId();
 		
 		Restaurante restaurante = new Restaurante();
 		restaurante.setNome("Restaurante Ipiranga");
@@ -108,5 +112,14 @@ class CadastroCozinhaServiceTest {
 		assertThrows(CozinhaNaoEncontradaException.class,
 				() -> cadastroCozinhaService.buscarOuFalhar(ID_COZINHA_INEXISTENTE));
 
+	}
+	
+	@Test
+	public void deveExcluirCozinhaComSucesso() {
+		
+		cadastroCozinhaService.excluir(ID_COZINHA_EXISTENTE);
+		
+		assertThrows(CozinhaNaoEncontradaException.class,
+				() -> cadastroCozinhaService.buscarOuFalhar(ID_COZINHA_EXISTENTE));
 	}
 }
