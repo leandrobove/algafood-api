@@ -1,4 +1,9 @@
 # 🍕 Algafood API
+<div align="center">
+    <img src="https://raw.githubusercontent.com/leandrobove/algafood-api/master/img/algafood-exemplo.jpg" width="350px" alt="Algafood exemplo">
+</div>
+
+# Descrição
 ![badge-em-desenvolvimento](https://img.shields.io/badge/Status-Em%20Desenvolvimento-brightgreen?style=flat)
 
 Projeto baseado em um sistema de delivery de comida. O projeto faz parte do curso Especialista Spring REST ministrado pela [AlgaWorks](https://www.algaworks.com/).
