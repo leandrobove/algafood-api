@@ -4,7 +4,7 @@
 Projeto baseado em um sistema de delivery de comida. O projeto faz parte do curso Especialista Spring REST ministrado pela [AlgaWorks](https://www.algaworks.com/).
 
 ## Diagrama de Classes de Domínio
-![diagrama-de-classes-de-dominio]()
+![diagrama-de-classes-de-dominio](https://raw.githubusercontent.com/leandrobove/algafood-api/master/img/diagrama-de-classes-de-dominio.jpg)
 
 ## Conteúdo Abordado
 - [x] Spring e Injeção de Dependências
@@ -25,7 +25,7 @@ Projeto baseado em um sistema de delivery de comida. O projeto faz parte do curs
 - [x] Cache de HTTP
 - [ ] Documentação da API com OpenAPI, Swagger UI e SpringFox
 - [x] Discoverability e HATEOAS - A Glória do REST
-- [] Evoluindo e versionando a API
+- [ ] Evoluindo e versionando a API
 - [x] Logging
 - [x] Segurança com Spring Security e OAuth2
 - [x] OAuth2 avançado com JWT e controle de acesso
