@@ -64,7 +64,7 @@ public class AuthorizationCodeFlowTest {
 			.extract().path("access_token")
 		;
 		
-		Assertions.assertTrue(accessToken != null);
+		Assertions.assertNotNull(accessToken);
 	}
 
 }
