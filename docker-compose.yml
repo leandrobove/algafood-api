@@ -24,6 +24,7 @@ services:
       - DB_HOST=algafood-db
       - SPRING_SESSION_STORE_TYPE=redis
       - SPRING_REDIS_HOST=algafood-redis
+      - SPRING_PROFILES_ACTIVE=development
     depends_on:
       - algafood-db
     networks:
