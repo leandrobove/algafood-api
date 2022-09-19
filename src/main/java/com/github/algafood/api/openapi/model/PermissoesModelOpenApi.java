@@ -20,7 +20,7 @@ public class PermissoesModelOpenApi {
 	@Data
 	public class PermissoesEmbeddedModelOpenApi {
 
-		private List<PermissaoModel> grupos;
+		private List<PermissaoModel> permissoes;
 
 	}
 }
