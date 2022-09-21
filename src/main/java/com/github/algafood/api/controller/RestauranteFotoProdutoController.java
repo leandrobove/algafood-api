@@ -1,13 +1,13 @@
 package com.github.algafood.api.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,8 @@ import com.github.algafood.domain.model.FotoProduto;
 import com.github.algafood.domain.model.Produto;
 import com.github.algafood.domain.service.CadastroProdutoService;
 import com.github.algafood.domain.service.CatalogoFotoProdutoService;
-import com.github.algafood.infrastructure.service.storage.DiscoLocalFotoStorageService;
+import com.github.algafood.domain.service.FotoStorageService;
+import com.github.algafood.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +49,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
 	private FotoProdutoModelAssembler fotoProdutoAssembler;
 
 	@Autowired
-	private DiscoLocalFotoStorageService discoLocalFotoStorageService;
+	private FotoStorageService fotoStorageService;
 
 	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
@@ -97,9 +98,18 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
 
 			verificarCompatibilidadeMediaType(mediaTypeFotoProduto, mediaTypesAceitas);
 
-			InputStream inputStream = discoLocalFotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+			FotoRecuperada fotoRecuperada = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+			
+			//verifica se a foto está armazenada na amazon s3
+			if(fotoRecuperada.temUrl()) {
+				return ResponseEntity
+						.status(HttpStatus.FOUND)
+						.header(HttpHeaders.LOCATION, fotoRecuperada.getUrl())
+						.build();
+			}
 
-			return ResponseEntity.ok().contentType(mediaTypeFotoProduto).body(new InputStreamResource(inputStream));
+			return ResponseEntity.ok().contentType(mediaTypeFotoProduto).body(new InputStreamResource(fotoRecuperada.getInputStream()));
+			
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}

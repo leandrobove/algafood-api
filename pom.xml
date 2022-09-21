@@ -21,6 +21,7 @@
 		<modelmapper.version>2.4.2</modelmapper.version>
 		<spring-fox.version>3.0.0</spring-fox.version>
 		<springauthserver.version>0.3.1</springauthserver.version>
+		<aws-java-sdk-s3.version>1.12.306</aws-java-sdk-s3.version>
 	</properties>
 
 	<dependencies>
@@ -153,6 +154,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 	</dependencies>
 
