@@ -28,14 +28,14 @@ Projeto baseado em um sistema de delivery de comida. O projeto faz parte do curs
 - [x] E-mails transacionais e Domain Events
 - [x] CORS e consumo da API com JavaScript e Java
 - [x] Cache de HTTP
-- [ ] Documentação da API com OpenAPI, Swagger UI e SpringFox
+- [x] Documentação da API com OpenAPI, Swagger UI e SpringFox
 - [x] Discoverability e HATEOAS - A Glória do REST
 - [ ] Evoluindo e versionando a API
 - [x] Logging
 - [x] Segurança com Spring Security e OAuth2
 - [x] OAuth2 avançado com JWT e controle de acesso
 - [x] Dockerizando a aplicação
-- [ ] Deploy em containers Docker na Amazon Web Services
+- [x] Deploy em containers Docker na Amazon Web Services
 - [ ] Documentação da API com SpringDoc
 - [x] Spring Authorization Server
 
@@ -54,7 +54,7 @@ Projeto baseado em um sistema de delivery de comida. O projeto faz parte do curs
 - OAuth2 com JWT
 
 ## 📖 Documentação (OA3)
-![documentacao](#)
+[Documentação da API](https://raw.githubusercontent.com/leandrobove/algafood-api/master/openapi3_0.json)
 
 ## ▶️ Como executar o projeto
 Para executar o projeto é necessário ter o Java 11+, Maven e Docker instalados e configurados na sua máquina.
@@ -71,7 +71,7 @@ git clone https://github.com/leandrobove/algafood-api.git
 
 3. Execute o docker-compose para subir os containers
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 [Postman Collection](#)
