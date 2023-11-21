@@ -8,6 +8,10 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     networks:
       - algafood-network
       
@@ -19,14 +23,15 @@ services:
 
   algafood-api:
     build: .
-    command: ["/wait-for-it.sh", "algafood-db:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
+#    command: ["java", "-jar", "api.jar"]
     environment:
       - DB_HOST=algafood-db
       - SPRING_SESSION_STORE_TYPE=redis
       - SPRING_REDIS_HOST=algafood-redis
       - SPRING_PROFILES_ACTIVE=development
     depends_on:
-      - algafood-db
+      algafood-db:
+        condition: service_healthy
     networks:
       - algafood-network
       
